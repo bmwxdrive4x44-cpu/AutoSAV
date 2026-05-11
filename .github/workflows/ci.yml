@@ -11,9 +11,24 @@ jobs:
   verify-and-build:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: file:./prisma/dev.db
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/marketplace_db?schema=public
       JWT_SECRET: ci-jwt-secret
       NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: marketplace_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d marketplace_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout
@@ -31,8 +46,8 @@ jobs:
       - name: Prisma Generate
         run: npm run db:generate
 
-      - name: Apply Migrations
-        run: npx prisma migrate deploy
+      - name: Push Schema
+        run: npm run db:push
 
       - name: Verify Role Model
         run: npm run verify:roles

@@ -20,7 +20,7 @@ npm install
 ```bash
 cp .env.example .env
 ```
-Edit `.env` with your SQLite/PostgreSQL connection string and JWT secret.
+Edit `.env` with your Supabase PostgreSQL connection string and JWT secret.
 
 Optional email notifications (Resend):
 
@@ -34,9 +34,11 @@ If these variables are missing, the app falls back to mock email logs in the ser
 
 ### 3. Set up the database
 ```bash
-npx prisma migrate dev --name init
+npx prisma db push
 npx prisma generate
 ```
+
+If you are using Supabase, create a PostgreSQL database there first, then copy the connection string into `DATABASE_URL`.
 
 Optional admin moderation test seed:
 
