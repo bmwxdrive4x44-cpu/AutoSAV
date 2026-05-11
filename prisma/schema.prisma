@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+    role          String    @default("USER")
+  agentValidationStatus String   @default("NOT_APPLICABLE") // NOT_APPLICABLE, PENDING, VALIDATED, REJECTED
+  agentValidationNote   String?
+  agentReviewedAt       DateTime?
+  emailVerifiedAt       DateTime?
+  phoneVerifiedAt       DateTime?
+  kycStatus             String    @default("UNVERIFIED") // UNVERIFIED, PENDING, VERIFIED, REJECTED
+  kycNotes              String?
+  kycReviewedAt         DateTime?
+  trustScore            Int       @default(0)
+  isBlocked     Boolean   @default(false)
+  blockedAt     DateTime?
+  blockReason   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Marketplace relations (contextual roles)
+  requestedRequests     ProductRequest[] @relation("RequestsByRequester")
+  requesterTransactions Transaction[]    @relation("TransactionsByRequester")
+  submittedOffers       Offer[]          @relation("OffersByProvider")
+  providedShipments     Shipment[]       @relation("ShipmentsByProvider")
+
+  // Admin relations
+  disputesReported  Dispute[] @relation("DisputesReported")
+  disputesHandled   Dispute[] @relation("DisputesHandled")
+}
+
+model Category {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  slug          String   @unique
+  icon          String?  // Lucide icon name
+  createdAt     DateTime @default(now())
+
+  requests      ProductRequest[]
+}
+
+model ProductRequest {
+  id                String        @id @default(cuid())
+  title             String
+  description       String
+  budget            Float
+  countryToBuyFrom  String
+  images            String       @default("")
+  status            String       @default("REQUEST_CREATED")
+  deletedAt         DateTime?
+  deletionReason    String?
+  isFeatured        Boolean       @default(false)
+  isSuspicious      Boolean       @default(false)
+  suspiciousReason  String?
+  markedAsScam      Boolean       @default(false)
+  scamReason        String?
+  scamMarkedAt      DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  categoryId        String
+  category          Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  requesterId       String        @map("clientId")
+  requester         User          @relation("RequestsByRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  offers            Offer[]
+  acceptedOfferId   String?       @unique
+  acceptedOffer     Offer?        @relation("AcceptedOffer", fields: [acceptedOfferId], references: [id])
+
+  shipment          Shipment?
+  transaction       Transaction?
+
+  // Dispute relation
+  dispute           Dispute? @relation("Dispute")
+}
+
+model Offer {
+  id                  String      @id @default(cuid())
+  price               Float
+  estimatedDeliveryDays Int
+  deletedAt           DateTime?
+  deletionReason      String?
+  message             String
+  status              String      @default("PENDING")
+  isSuspicious        Boolean     @default(false)
+  suspiciousReason    String?
+  isReportedAsAbuse   Boolean     @default(false)
+  abuseReason         String?
+  abuseReportedAt     DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  providerId        String      @map("agentBuyerId")
+  provider          User        @relation("OffersByProvider", fields: [providerId], references: [id], onDelete: Cascade)
+
+  requestId           String
+  request             ProductRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  acceptedForRequest  ProductRequest? @relation("AcceptedOffer")
+}
+
+model Shipment {
+  id            String   @id @default(cuid())
+  trackingNumber String?
+  carrier       String?
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  requestId     String   @unique
+  request       ProductRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  providerId   String @map("agentBuyerId")
+  provider     User   @relation("ShipmentsByProvider", fields: [providerId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  amount        Float
+  status        String   @default("PENDING") // PENDING, HELD, RELEASED, REFUNDED
+  paymentMethod String?  // e.g., "CASH", "BANK_TRANSFER"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  requestId     String   @unique
+  request       ProductRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  requesterId   String   @map("clientId")
+  requester     User     @relation("TransactionsByRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+}
+
+model Dispute {
+  id            String   @id @default(cuid())
+  reason        String
+  status        String   @default("OPEN") // OPEN, RESOLVED, CLOSED
+  resolution    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  requestId     String   @unique
+  request       ProductRequest @relation("Dispute", fields: [requestId], references: [id], onDelete: Cascade)
+
+  reportedById  String
+  reportedBy    User     @relation("DisputesReported", fields: [reportedById], references: [id], onDelete: Cascade)
+
+  adminId       String?
+  admin         User?    @relation("DisputesHandled", fields: [adminId], references: [id], onDelete: SetNull)
+}
+
+model NotificationLog {
+  id         String   @id @default(cuid())
+  event      String
+  toEmail    String
+  subject    String
+  provider   String
+  status     String   // SENT | FAILED | MOCK
+  error      String?
+  requestId  String?
+  createdAt  DateTime @default(now())
+}

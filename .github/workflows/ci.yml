@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: file:./prisma/dev.db
+      JWT_SECRET: ci-jwt-secret
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Prisma Generate
+        run: npm run db:generate
+
+      - name: Apply Migrations
+        run: npx prisma migrate deploy
+
+      - name: Verify Role Model
+        run: npm run verify:roles
+
+      - name: Smoke Test Workflow
+        run: npm run smoke:workflow
+
+      - name: Smoke Test Dispute Arbitration
+        run: npm run smoke:dispute
+
+      - name: Build
+        run: npm run build
