@@ -20,7 +20,10 @@ npm install
 ```bash
 cp .env.example .env
 ```
-Edit `.env` with your Supabase PostgreSQL connection string and JWT secret.
+Edit `.env` with your Supabase PostgreSQL connection strings and JWT secret.
+
+- `DATABASE_URL`: use the Supabase pooler URL (`pooler.supabase.com:6543`) for app runtime on Vercel.
+- `DIRECT_URL`: use the direct database URL (`db.<project-ref>.supabase.co:5432`) for Prisma CLI operations.
 
 Optional email notifications (Resend):
 
@@ -38,7 +41,7 @@ npx prisma db push
 npx prisma generate
 ```
 
-If you are using Supabase, create a PostgreSQL database there first, then copy the connection string into `DATABASE_URL`.
+If you are using Supabase, create a PostgreSQL database there first, then set both `DATABASE_URL` (pooler) and `DIRECT_URL` (direct).
 
 Optional admin moderation test seed:
 
