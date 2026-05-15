@@ -1,6 +1,8 @@
 ﻿import { CreateRequestForm } from "@/components/requests/create-request-form";
 import { getCategories } from "@/app/actions/categories";
 
+export const dynamic = "force-dynamic";
+
 export default async function CreateRequestPage() {
   const categories = await getCategories();
 

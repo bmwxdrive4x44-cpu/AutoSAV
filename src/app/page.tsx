@@ -10,6 +10,8 @@ import { normalizeLang, textDir, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { ArrowRight, Globe, Zap, Shield, Package, MessagesSquare, Handshake, CheckCircle2 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 const COPY: Record<
   Lang,
   {
