@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "node scripts/dev-reset.cjs",
     "dev:reset": "node scripts/dev-reset.cjs",
-    "prebuild": "prisma db push",
     "build": "next build",
     "postinstall": "prisma generate",
     "start": "next start",
