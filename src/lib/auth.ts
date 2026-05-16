@@ -1,4 +1,4 @@
-﻿import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
@@ -64,7 +64,7 @@ export async function getCurrentUser() {
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) throw new Error("Unauthorized");
-  if (user.isBlocked) throw new Error("Votre compte a Ã©tÃ© bloquÃ©. Contactez le support.");
+  if (user.isBlocked) throw new Error("Votre compte a été bloqué. Contactez le support.");
   return user;
 }
 

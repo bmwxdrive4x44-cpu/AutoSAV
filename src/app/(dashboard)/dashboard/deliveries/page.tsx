@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { getUserDeliveries } from "@/app/actions/dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { RequestStatusBadge } from "@/components/requests/status-badge";
@@ -21,8 +21,8 @@ export default async function DeliveriesPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="font-semibold text-slate-900">{delivery.request.title}</p>
-                    <p className="text-sm text-slate-500">Tracking: {delivery.trackingNumber || "Non renseigne"} Â· Transporteur: {delivery.carrier || "Non renseigne"}</p>
-                    <p className="text-xs text-slate-400">Expedie: {delivery.shippedAt ? formatDate(delivery.shippedAt) : "N/A"} Â· Livre: {delivery.deliveredAt ? formatDate(delivery.deliveredAt) : "En cours"}</p>
+                    <p className="text-sm text-slate-500">Tracking: {delivery.trackingNumber || "Non renseigne"} · Transporteur: {delivery.carrier || "Non renseigne"}</p>
+                    <p className="text-xs text-slate-400">Expedie: {delivery.shippedAt ? formatDate(delivery.shippedAt) : "N/A"} · Livre: {delivery.deliveredAt ? formatDate(delivery.deliveredAt) : "En cours"}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <RequestStatusBadge status={delivery.request.status} />

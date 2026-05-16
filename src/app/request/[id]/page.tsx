@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getRequestById } from "@/app/actions/requests";
 import { getCurrentUser } from "@/lib/auth";
@@ -30,9 +30,9 @@ export default async function RequestDetailPage({ params }: { params: { id: stri
     "Demande",
     "Offres",
     "Paiement",
-    "ExpÃ©dition",
-    "RÃ©ception",
-    "Paiement libÃ©rÃ©",
+    "Expédition",
+    "Réception",
+    "Paiement libéré",
   ];
 
   return (

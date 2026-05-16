@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import {
@@ -37,7 +37,7 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
   const suspiciousOffers = offers.filter((o) => o.isSuspicious && !o.deletedAt);
   const abusiveOffers = offers.filter((o) => o.isReportedAsAbuse && !o.deletedAt);
 
-  // DÃ©tecte les prix extrÃªmes (valeurs aberrantes)
+  // Détecte les prix extrêmes (valeurs aberrantes)
   const prices = offers.map((o) => o.price).filter((p) => p > 0);
   const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
   const stdDev = prices.length > 0
@@ -60,15 +60,15 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
           <p className="text-2xl font-bold text-amber-900">{suspiciousOffers.length}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow border border-red-200 bg-red-50">
-          <p className="text-sm text-red-700">SignalÃ©es abusives</p>
+          <p className="text-sm text-red-700">Signalées abusives</p>
           <p className="text-2xl font-bold text-red-900">{abusiveOffers.length}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow border border-orange-200 bg-orange-50">
-          <p className="text-sm text-orange-700">Prix extrÃªmes</p>
+          <p className="text-sm text-orange-700">Prix extrêmes</p>
           <p className="text-2xl font-bold text-orange-900">{extremePriceOffers.length}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow border border-slate-200 bg-slate-50">
-          <p className="text-sm text-slate-700">Offres supprimÃ©es</p>
+          <p className="text-sm text-slate-700">Offres supprimées</p>
           <p className="text-2xl font-bold text-slate-900">{deletedOffers.length}</p>
         </div>
       </div>
@@ -76,10 +76,10 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
       {/* Archived deleted offers */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 bg-slate-100 border-b border-slate-200">
-          <h3 className="text-base font-semibold text-slate-900">Offres supprimÃ©es ({deletedOffers.length})</h3>
+          <h3 className="text-base font-semibold text-slate-900">Offres supprimées ({deletedOffers.length})</h3>
         </div>
         {deletedOffers.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">Aucune offre supprimÃ©e.</div>
+          <div className="p-6 text-sm text-slate-500">Aucune offre supprimée.</div>
         ) : (
           <table className="w-full">
             <thead className="bg-slate-50">
@@ -172,7 +172,7 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
                           }
                           const reason = askReason(
                             "Raison de suppression :",
-                            "Offre supprimÃ©e par modÃ©ration admin"
+                            "Offre supprimée par modération admin"
                           );
                           if (!reason) return;
                           return handleAction(offer.id, () => deleteOffer(offer.id, reason));
@@ -194,11 +194,11 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
       {/* Extreme Price Offers */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 bg-orange-50 border-b border-orange-200">
-          <h3 className="text-base font-semibold text-orange-900">Offres avec prix extrÃªmes ({extremePriceOffers.length})</h3>
+          <h3 className="text-base font-semibold text-orange-900">Offres avec prix extrêmes ({extremePriceOffers.length})</h3>
           <p className="text-xs text-orange-700">Moyenne: {Math.floor(avgPrice)} DZD</p>
         </div>
         {extremePriceOffers.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">Aucune offre avec prix extrÃªme.</div>
+          <div className="p-6 text-sm text-slate-500">Aucune offre avec prix extrême.</div>
         ) : (
           <table className="w-full">
             <thead className="bg-slate-50">
@@ -206,7 +206,7 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Demande</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Agent</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Prix</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Ã‰cart</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Écart</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
               </tr>
             </thead>
@@ -257,10 +257,10 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
       {/* Reported as Abuse */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 bg-red-50 border-b border-red-200">
-          <h3 className="text-base font-semibold text-red-900">SignalÃ©es comme abusives ({abusiveOffers.length})</h3>
+          <h3 className="text-base font-semibold text-red-900">Signalées comme abusives ({abusiveOffers.length})</h3>
         </div>
         {abusiveOffers.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">Aucune offre signalÃ©e comme abusive.</div>
+          <div className="p-6 text-sm text-slate-500">Aucune offre signalée comme abusive.</div>
         ) : (
           <table className="w-full">
             <thead className="bg-slate-50">
@@ -303,7 +303,7 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
                           }
                           const reason = askReason(
                             "Raison de suppression :",
-                            "Offre supprimÃ©e suite Ã  abus"
+                            "Offre supprimée suite à abus"
                           );
                           if (!reason) return;
                           return handleAction(offer.id, () => deleteOffer(offer.id, reason));

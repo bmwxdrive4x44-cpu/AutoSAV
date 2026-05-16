@@ -1,4 +1,4 @@
-﻿interface StatusBadgeProps {
+interface StatusBadgeProps {
   status: string;
 }
 
@@ -12,12 +12,12 @@ const statusColors: Record<string, { bg: string; text: string; label: string }> 
     OFFERS_RECEIVED: {
       bg: "bg-yellow-100",
       text: "text-yellow-800",
-      label: "Offres reÃ§ues",
+      label: "Offres reçues",
     },
     OFFER_ACCEPTED: {
       bg: "bg-green-100",
       text: "text-green-800",
-      label: "Offre acceptÃ©e",
+      label: "Offre acceptée",
     },
     PAYMENT_PENDING: {
       bg: "bg-purple-100",
@@ -32,17 +32,17 @@ const statusColors: Record<string, { bg: string; text: string; label: string }> 
     SHIPPED: {
       bg: "bg-cyan-100",
       text: "text-cyan-800",
-      label: "ExpÃ©diÃ©",
+      label: "Expédié",
     },
     DELIVERED: {
       bg: "bg-green-200",
       text: "text-green-900",
-      label: "LivrÃ©",
+      label: "Livré",
     },
     PAYMENT_RELEASED: {
       bg: "bg-emerald-100",
       text: "text-emerald-800",
-      label: "Paiement libÃ©rÃ©",
+      label: "Paiement libéré",
     },
   };
 

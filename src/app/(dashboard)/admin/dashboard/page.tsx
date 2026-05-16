@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -112,8 +112,8 @@ export default function AdminDashboard() {
         status === "REJECTED"
           ? "Profil incomplet ou confiance insuffisante"
           : status === "VALIDATED"
-            ? "Agent validÃ© par admin"
-            : "RepassÃ© en attente de revue";
+            ? "Agent validé par admin"
+            : "Repassé en attente de revue";
 
       await setAgentValidationStatus(userId, status, note);
       await reloadAdminData();
@@ -328,7 +328,7 @@ export default function AdminDashboard() {
             <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-slate-700">Notifications de test</p>
-                <p className="text-xs text-slate-500">Envoie un email de test Ã  l'admin connectÃ©.</p>
+                <p className="text-xs text-slate-500">Envoie un email de test à l'admin connecté.</p>
               </div>
               <button
                 onClick={handleSendTestNotification}
@@ -417,7 +417,7 @@ export default function AdminDashboard() {
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nom</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">RÃ´le</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Rôle</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Statut</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Validation agent</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
@@ -435,7 +435,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-6 py-3 text-sm">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.isBlocked ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700"}`}>
-                        {user.isBlocked ? "BloquÃ©" : "Actif"}
+                        {user.isBlocked ? "Bloqué" : "Actif"}
                       </span>
                     </td>
                     <td className="px-6 py-3 text-sm">
@@ -462,7 +462,7 @@ export default function AdminDashboard() {
                           disabled={!!userActionPending[user.id] || user.role === "ADMIN"}
                           className={`px-3 py-1 rounded-md text-xs font-semibold ${user.isBlocked ? "bg-emerald-600 text-white" : "bg-amber-600 text-white"} disabled:opacity-60`}
                         >
-                          {user.isBlocked ? "DÃ©bloquer" : "Bloquer"}
+                          {user.isBlocked ? "Débloquer" : "Bloquer"}
                         </button>
                         <select
                           value={user.role}
@@ -546,16 +546,16 @@ export default function AdminDashboard() {
                 className="h-10 rounded-lg border border-slate-300 px-3 text-sm"
               >
                 <option value="ALL">Tous les statuts</option>
-                <option value="SENT">EnvoyÃ©es</option>
-                <option value="FAILED">Ã‰chec</option>
-                <option value="MOCK">SimulÃ©es</option>
+                <option value="SENT">Envoyées</option>
+                <option value="FAILED">Échec</option>
+                <option value="MOCK">Simulées</option>
               </select>
               <select
                 value={notifEventFilter}
                 onChange={(e) => setNotifEventFilter(e.target.value)}
                 className="h-10 rounded-lg border border-slate-300 px-3 text-sm"
               >
-                <option value="ALL">Tous les Ã©vÃ©nements</option>
+                <option value="ALL">Tous les événements</option>
                 {notificationEvents.map((event) => (
                   <option key={event} value={event}>{event}</option>
                 ))}
@@ -569,7 +569,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
-              <div>Logs: {notificationTotal} â€¢ Page {notificationPage} / {notificationTotalPages}</div>
+              <div>Logs: {notificationTotal} • Page {notificationPage} / {notificationTotalPages}</div>
               <button onClick={exportNotificationsCsv} disabled={filteredNotificationLogs.length === 0} className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50">
                 Exporter CSV
               </button>
@@ -582,7 +582,7 @@ export default function AdminDashboard() {
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Ã‰vÃ©nement</th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Événement</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">Destinataire</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">Statut</th>
                   </tr>
@@ -608,7 +608,7 @@ export default function AdminDashboard() {
                 disabled={notificationPage <= 1}
                 className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 disabled:opacity-60 text-sm"
               >
-                PrÃ©cÃ©dent
+                Précédent
               </button>
               <button
                 onClick={() => loadNotificationLogs(notificationPage + 1)}
@@ -627,7 +627,7 @@ export default function AdminDashboard() {
               <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-semibold text-slate-900">Historique utilisateur</h3>
-                  <p className="text-xs text-slate-500">{historyUser.user.name} â€¢ {historyUser.user.email}</p>
+                  <p className="text-xs text-slate-500">{historyUser.user.name} • {historyUser.user.email}</p>
                 </div>
                 <button onClick={() => setHistoryOpen(false)} className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold hover:bg-slate-50">
                   Fermer

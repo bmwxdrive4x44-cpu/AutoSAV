@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -107,30 +107,30 @@ const FEED_COPY: Record<
     },
   },
   ar: {
-    title: "Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ù†Ø´Ø·Ø©",
-    subtitle: "ØªØµÙØ­ Ø§Ù„ÙØ±Øµ Ø§Ù„Ø­Ø§Ù„ÙŠØ© ÙˆÙ‚Ø¯Ù‘Ù… Ø¹Ø±Ø¶ Ù…Ù†Ø§Ø³Ø¨ Ø¨Ø³Ø±Ø¹Ø©.",
-    searchPlaceholder: "Ø¨Ø­Ø« Ø¨Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø£Ùˆ Ø§Ù„Ø¨Ù„Ø¯...",
-    categoriesTitle: "ÙØ¦Ø§Øª Ø´Ø§Ø¦Ø¹Ø©",
+    title: "الطلبات النشطة",
+    subtitle: "تصفح الفرص الحالية وقدم عرضا مناسبا بسرعة.",
+    searchPlaceholder: "ابحث باسم المنتج أو البلد...",
+    categoriesTitle: "فئات شائعة",
     categories: [
-      { label: "Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ§Øª", searchTerm: "electronic" },
-      { label: "Ù…Ù„Ø§Ø¨Ø³", searchTerm: "fashion" },
-      { label: "Ø§Ù„Ù…Ù†Ø²Ù„ ÙˆØ§Ù„Ø­Ø¯ÙŠÙ‚Ø©", searchTerm: "home" },
-      { label: "Ù‚Ø·Ø¹ Ø§Ù„Ø³ÙŠØ§Ø±Ø§Øª", searchTerm: "auto" },
+      { label: "إلكترونيات", searchTerm: "electronic" },
+      { label: "ملابس", searchTerm: "fashion" },
+      { label: "منزل وحديقة", searchTerm: "home" },
+      { label: "قطع السيارات", searchTerm: "auto" },
     ],
-    emptyTitle: "Ù…Ø§ Ù„Ù‚ÙŠÙ†Ø§Ø´ Ø·Ù„Ø¨Ø§Øª",
-    emptySubtitle: "Ø¨Ø¯Ù„ ÙƒÙ„Ù…Ø§Øª Ø§Ù„Ø¨Ø­Ø« Ø£Ùˆ Ø±Ø¬Ø¹ Ù…Ù† Ø¨Ø¹Ø¯.",
-    requestsAvailable: "Ù…ØªØ§Ø­",
-    requestSingle: "Ø·Ù„Ø¨",
-    requestPlural: "Ø·Ù„Ø¨Ø§Øª",
-    makeOffer: "Ù‚Ø¯Ù‘Ù… Ø¹Ø±Ø¶",
+    emptyTitle: "لا توجد طلبات",
+    emptySubtitle: "غير كلمات البحث أو عد لاحقا.",
+    requestsAvailable: "متاح",
+    requestSingle: "طلب",
+    requestPlural: "طلبات",
+    makeOffer: "قدم عرض",
     card: {
-      budget: "Ø§Ù„Ù…ÙŠØ²Ø§Ù†ÙŠØ©",
-      from: "Ù…Ù†",
-      active: "Ù†Ø´Ø·",
-      highPriority: "Ø£ÙˆÙ„ÙˆÙŠØ© Ø¹Ø§Ù„ÙŠØ©",
-      statusCompleted: "Ù…ÙƒØªÙ…Ù„",
-      statusInProgress: "Ù‚ÙŠØ¯ Ø§Ù„ØªÙ†ÙÙŠØ°",
-      statusOpen: "Ù…ÙØªÙˆØ­",
+      budget: "الميزانية",
+      from: "من",
+      active: "نشط",
+      highPriority: "أولوية عالية",
+      statusCompleted: "مكتمل",
+      statusInProgress: "قيد التنفيذ",
+      statusOpen: "مفتوح",
     },
   },
 };

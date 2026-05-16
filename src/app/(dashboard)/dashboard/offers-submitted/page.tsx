@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { getUserSubmittedOffersDetailed } from "@/app/actions/dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { OfferStatusBadge } from "@/components/requests/status-badge";
@@ -21,7 +21,7 @@ export default async function OffersSubmittedPage() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="font-semibold text-slate-900">{offer.request.title}</p>
-                    <p className="text-sm text-slate-500">{formatPrice(offer.price)} Â· {offer.estimatedDeliveryDays} jours Â· Demandeur: {offer.request.requester.name}</p>
+                    <p className="text-sm text-slate-500">{formatPrice(offer.price)} · {offer.estimatedDeliveryDays} jours · Demandeur: {offer.request.requester.name}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <OfferStatusBadge status={offer.status} />

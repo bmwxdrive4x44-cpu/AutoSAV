@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -88,7 +88,7 @@ export async function login(formData: FormData) {
     path: "/",
   });
 
-  // Si un URL de redirection personnalisÃ© est fourni, l'utiliser
+  // Si un URL de redirection personnalisé est fourni, l'utiliser
   if (data.redirect) {
     redirect(data.redirect);
   }
@@ -172,7 +172,7 @@ export async function register(formData: FormData) {
     path: "/",
   });
 
-  // Si un URL de redirection personnalisÃ© est fourni, l'utiliser
+  // Si un URL de redirection personnalisé est fourni, l'utiliser
   if (data.redirect) {
     redirect(data.redirect);
   }

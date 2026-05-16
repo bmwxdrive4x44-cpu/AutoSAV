@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { getUserOffersReceived } from "@/app/actions/dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { OfferStatusBadge, RequestStatusBadge } from "@/components/requests/status-badge";
@@ -31,7 +31,7 @@ export default async function OffersReceivedPage() {
                     <div key={offer.id} className="flex items-center justify-between rounded-lg bg-slate-50 p-3">
                       <div>
                         <p className="font-medium text-slate-900">{offer.provider.name}</p>
-                        <p className="text-sm text-slate-500">{formatPrice(offer.price)} Â· {offer.estimatedDeliveryDays} jours</p>
+                        <p className="text-sm text-slate-500">{formatPrice(offer.price)} · {offer.estimatedDeliveryDays} jours</p>
                       </div>
                       <OfferStatusBadge status={offer.status} />
                     </div>

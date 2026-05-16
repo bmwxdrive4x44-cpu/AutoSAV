@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { getUserDisputes } from "@/app/actions/dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
@@ -21,7 +21,7 @@ export default async function DisputesPage() {
                   <div>
                     <p className="font-semibold text-slate-900">{dispute.request.title}</p>
                     <p className="text-sm text-slate-500">Raison: {dispute.reason}</p>
-                    <p className="text-xs text-slate-400">Statut: {dispute.status} Â· Cree le {formatDate(dispute.createdAt)}</p>
+                    <p className="text-xs text-slate-400">Statut: {dispute.status} · Cree le {formatDate(dispute.createdAt)}</p>
                   </div>
                   <Link href={`/request/${dispute.request.id}`} className="text-sm font-medium text-primary-700 hover:underline">Voir la demande</Link>
                 </div>

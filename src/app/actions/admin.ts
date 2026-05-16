@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -360,7 +360,7 @@ export async function deleteUser(userId: string, reason: string) {
     throw new Error("Cannot delete an admin user");
   }
 
-  // Soft delete : marquer comme bloquÃ© avec raison
+  // Soft delete : marquer comme bloqué avec raison
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -687,7 +687,7 @@ export async function createDispute(requestId: string, reason: string) {
 
   if (!request) throw new Error("Request not found");
 
-  // VÃ©rifier que l'utilisateur est impliquÃ© dans la transaction
+  // Vérifier que l'utilisateur est impliqué dans la transaction
   if (
     request.requesterId !== user.id &&
     request.acceptedOffer?.providerId !== user.id

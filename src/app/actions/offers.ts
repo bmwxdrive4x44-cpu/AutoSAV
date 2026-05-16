@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -34,7 +34,7 @@ export async function createOffer(formData: FormData) {
   if (request.status !== "REQUEST_CREATED" && request.status !== "OFFERS_RECEIVED") {
     throw new Error("Request is no longer accepting offers");
   }
-  if (request.requester.isBlocked) throw new Error("Le client de cette demande a Ã©tÃ© bloquÃ©");
+  if (request.requester.isBlocked) throw new Error("Le client de cette demande a été bloqué");
 
   await prisma.$transaction(async (tx) => {
     await tx.offer.create({
@@ -82,7 +82,7 @@ export async function acceptOffer(offerId: string, requestId: string) {
 
   const offer = request.offers.find((o) => o.id === offerId);
   if (!offer) throw new Error("Offer not found");
-  if (offer.provider.isBlocked) throw new Error("L'agent de cette offre a Ã©tÃ© bloquÃ©");
+  if (offer.provider.isBlocked) throw new Error("L'agent de cette offre a été bloqué");
 
   await prisma.$transaction(async (tx) => {
     // Refetch offer to ensure it hasn't changed since selection

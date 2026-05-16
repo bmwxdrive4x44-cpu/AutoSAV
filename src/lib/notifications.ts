@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 type EmailPayload = {
   to: string;
@@ -48,7 +48,7 @@ function buildHtmlEmail(params: {
         ${ctaBlock}
       </div>
       <div style="border-top:1px solid #e2e8f0;padding:12px 22px;font-size:12px;color:#64748b;">
-        ${BRAND_NAME} â€¢ This is an automated message.
+        ${BRAND_NAME} • This is an automated message.
       </div>
     </div>
   </div>`;

@@ -19,11 +19,11 @@ const COPY: Record<
   }
 > = {
   fr: {
-    breadcrumbs: ["Accueil", "CatÃ©gories"],
+    breadcrumbs: ["Accueil", "Catégories"],
     requests: "demandes",
-    noRequests: "Aucune demande dans cette catÃ©gorie",
-    noRequestsDesc: "Revenez bientÃ´t pour dÃ©couvrir les demandes disponibles.",
-    browseAll: "Voir toutes les catÃ©gories",
+    noRequests: "Aucune demande dans cette catégorie",
+    noRequestsDesc: "Revenez bientôt pour découvrir les demandes disponibles.",
+    browseAll: "Voir toutes les catégories",
   },
   en: {
     breadcrumbs: ["Home", "Categories"],
@@ -158,7 +158,7 @@ export default async function CategoryPage({
                       )}
                       className="px-6 py-3 rounded-lg border border-slate-300 hover:bg-slate-100 transition-colors"
                     >
-                      â† {lang === "fr" ? "PrÃ©cÃ©dent" : "Previous"}
+                      ← {lang === "fr" ? "Précédent" : "Previous"}
                     </Link>
                   )}
 
@@ -176,7 +176,7 @@ export default async function CategoryPage({
                       )}
                       className="px-6 py-3 rounded-lg border border-slate-300 hover:bg-slate-100 transition-colors"
                     >
-                      {lang === "fr" ? "Suivant" : "Next"} â†’
+                      {lang === "fr" ? "Suivant" : "Next"} →
                     </Link>
                   )}
                 </div>

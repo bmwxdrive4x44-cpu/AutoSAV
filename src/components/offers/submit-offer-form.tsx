@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -38,11 +38,11 @@ export function SubmitOfferForm({ requestId }: { requestId: string }) {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="price">Prix proposÃ© (DZD)</Label>
+          <Label htmlFor="price">Prix proposé (DZD)</Label>
           <Input id="price" name="price" type="number" min="1" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="estimatedDeliveryDays">DÃ©lai (jours)</Label>
+          <Label htmlFor="estimatedDeliveryDays">Délai (jours)</Label>
           <Input id="estimatedDeliveryDays" name="estimatedDeliveryDays" type="number" min="1" required />
         </div>
       </div>
@@ -52,7 +52,7 @@ export function SubmitOfferForm({ requestId }: { requestId: string }) {
         <Textarea
           id="message"
           name="message"
-          placeholder="PrÃ©cisez votre offre, disponibilitÃ©, etc."
+          placeholder="Précisez votre offre, disponibilité, etc."
           required
           rows={3}
         />

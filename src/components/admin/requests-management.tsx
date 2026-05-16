@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import {
@@ -57,7 +57,7 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
           <p className="text-2xl font-bold text-emerald-900">{activeRequests.length}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow border border-slate-200 bg-slate-50">
-          <p className="text-sm text-slate-700">Demandes supprimÃ©es</p>
+          <p className="text-sm text-slate-700">Demandes supprimées</p>
           <p className="text-2xl font-bold text-slate-900">{deletedRequests.length}</p>
         </div>
       </div>
@@ -96,7 +96,7 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
                           }
                           const reason = askReason(
                             "Raison de la fraude :",
-                            "Fraude suspectÃ©e par modÃ©ration admin"
+                            "Fraude suspectée par modération admin"
                           );
                           if (!reason) return;
                           return handleAction(req.id, () => markRequestAsScam(req.id, reason));
@@ -113,7 +113,7 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
                           }
                           const reason = askReason(
                             "Raison de suppression :",
-                            "SupprimÃ©e par modÃ©ration admin"
+                            "Supprimée par modération admin"
                           );
                           if (!reason) return;
                           return handleAction(req.id, () => deleteRequest(req.id, reason));
@@ -200,10 +200,10 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
       {/* Closed Requests */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 bg-slate-50 border-b border-slate-200">
-          <h3 className="text-base font-semibold text-slate-900">Demandes fermÃ©es ({closedRequests.length})</h3>
+          <h3 className="text-base font-semibold text-slate-900">Demandes fermées ({closedRequests.length})</h3>
         </div>
         {closedRequests.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">Aucune demande fermÃ©e.</div>
+          <div className="p-6 text-sm text-slate-500">Aucune demande fermée.</div>
         ) : (
           <table className="w-full">
             <thead className="bg-slate-50">
@@ -211,7 +211,7 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Titre</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Client</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Budget</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Offre acceptÃ©e</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Offre acceptée</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -233,10 +233,10 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
       {/* Archived deleted requests */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 bg-slate-100 border-b border-slate-200">
-          <h3 className="text-base font-semibold text-slate-900">Demandes supprimÃ©es ({deletedRequests.length})</h3>
+          <h3 className="text-base font-semibold text-slate-900">Demandes supprimées ({deletedRequests.length})</h3>
         </div>
         {deletedRequests.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">Aucune demande supprimÃ©e.</div>
+          <div className="p-6 text-sm text-slate-500">Aucune demande supprimée.</div>
         ) : (
           <table className="w-full">
             <thead className="bg-slate-50">

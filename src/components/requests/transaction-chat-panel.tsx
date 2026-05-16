@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ export function TransactionChatPanel({
       <div className="border-b border-slate-200 px-4 py-4 sm:px-6">
         <h2 className="text-lg font-semibold text-slate-900">Chat transactionnel</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Messages simples liÃ©s Ã  une demande et Ã  une offre pour nÃ©gocier, demander des photos ou des preuves.
+          Messages simples liés à une demande et à une offre pour négocier, demander des photos ou des preuves.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export function TransactionChatPanel({
                 <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700">{message.body}</p>
                 {relatedOffer && (
                   <p className="mt-2 text-xs font-semibold text-slate-500">
-                    Offre liÃ©e: {relatedOffer.provider.name} - {Math.floor(relatedOffer.price)} DZD
+                    Offre liée: {relatedOffer.provider.name} - {Math.floor(relatedOffer.price)} DZD
                   </p>
                 )}
               </div>
@@ -101,7 +101,7 @@ export function TransactionChatPanel({
             className="space-y-4"
           >
             <div className="space-y-2">
-              <Label htmlFor="chatOfferId">Lier Ã  une offre</Label>
+              <Label htmlFor="chatOfferId">Lier à une offre</Label>
               <select
                 id="chatOfferId"
                 name="offerId"
@@ -125,7 +125,7 @@ export function TransactionChatPanel({
                 value={body}
                 onChange={(event) => setBody(event.target.value)}
                 rows={4}
-                placeholder="Ã‰crivez une question, une prÃ©cision ou demandez une preuve..."
+                placeholder="Écrivez une question, une précision ou demandez une preuve..."
                 required
               />
             </div>
@@ -138,7 +138,7 @@ export function TransactionChatPanel({
           </form>
         ) : (
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-            Le chat est rÃ©servÃ© aux parties impliquÃ©es dans la demande et ses offres.
+            Le chat est réservé aux parties impliquées dans la demande et ses offres.
           </div>
         )}
       </div>

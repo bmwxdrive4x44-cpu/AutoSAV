@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,13 +60,13 @@ export function OfferCard({ offer, requestId, canAccept }: OfferCardProps) {
               {offer.provider.emailVerifiedAt && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 font-semibold text-emerald-700">
                   <ShieldCheck className="h-3 w-3" />
-                  Email vÃ©rifiÃ©
+                  Email vérifié
                 </span>
               )}
               {offer.provider.phoneVerifiedAt && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2 py-1 font-semibold text-cyan-700">
                   <ShieldCheck className="h-3 w-3" />
-                  TÃ©lÃ©phone vÃ©rifiÃ©
+                  Téléphone vérifié
                 </span>
               )}
             </div>
@@ -85,7 +85,7 @@ export function OfferCard({ offer, requestId, canAccept }: OfferCardProps) {
           <div className="rounded-lg bg-slate-50 p-2 text-xs text-slate-600">
             <div className="flex items-center gap-1 font-semibold text-slate-700">
               <Clock className="h-4 w-4" />
-              Livraison estimÃ©e
+              Livraison estimée
             </div>
             <p className="mt-1 text-sm text-slate-900">{offer.estimatedDeliveryDays} jours</p>
           </div>
@@ -94,21 +94,21 @@ export function OfferCard({ offer, requestId, canAccept }: OfferCardProps) {
               <TrendingUp className="h-4 w-4" />
               Livraisons
             </div>
-            <p className="mt-1 text-sm text-slate-900">{deliveredShipments} rÃ©ussies</p>
+            <p className="mt-1 text-sm text-slate-900">{deliveredShipments} réussies</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-2 text-xs text-slate-600">
             <div className="flex items-center gap-1 font-semibold text-slate-700">
               <AlertTriangle className="h-4 w-4" />
               Litiges
             </div>
-            <p className="mt-1 text-sm text-slate-900">{disputesOnAgent} signalÃ©(s)</p>
+            <p className="mt-1 text-sm text-slate-900">{disputesOnAgent} signalé(s)</p>
           </div>
         </div>
         <div className="flex items-start gap-1 text-sm text-slate-600">
           <MessageSquare className="w-4 h-4 mt-0.5" />
           <p className="text-sm">{offer.message}</p>
         </div>
-        <p className="text-xs text-slate-500">{totalOffers} offre(s) publiÃ©es par cet agent.</p>
+        <p className="text-xs text-slate-500">{totalOffers} offre(s) publiées par cet agent.</p>
         {canAccept && offer.status === "PENDING" && (
           <Button
             className="w-full"

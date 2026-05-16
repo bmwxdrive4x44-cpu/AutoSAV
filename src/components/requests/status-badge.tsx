@@ -1,20 +1,20 @@
-﻿"use client";
+"use client";
 
 import { Badge } from "@/components/ui/badge";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "success" | "warning" | "destructive" }> = {
   REQUEST_CREATED: { label: "Nouvelle demande", variant: "secondary" },
-  OFFERS_RECEIVED: { label: "Offres reÃ§ues", variant: "warning" },
-  OFFER_ACCEPTED: { label: "Offre acceptÃ©e", variant: "default" },
+  OFFERS_RECEIVED: { label: "Offres reçues", variant: "warning" },
+  OFFER_ACCEPTED: { label: "Offre acceptée", variant: "default" },
   PAYMENT_PENDING: { label: "Paiement en attente", variant: "warning" },
   PURCHASE_IN_PROGRESS: { label: "Achat en cours", variant: "default" },
-  SHIPPED: { label: "ExpÃ©diÃ©", variant: "default" },
-  DELIVERED: { label: "LivrÃ©", variant: "success" },
-  PAYMENT_RELEASED: { label: "TerminÃ©", variant: "success" },
+  SHIPPED: { label: "Expédié", variant: "default" },
+  DELIVERED: { label: "Livré", variant: "success" },
+  PAYMENT_RELEASED: { label: "Terminé", variant: "success" },
   PENDING: { label: "En attente", variant: "warning" },
-  ACCEPTED: { label: "AcceptÃ©e", variant: "success" },
-  REJECTED: { label: "RefusÃ©e", variant: "destructive" },
-    EXPIRED: { label: "ExpirÃ©e", variant: "destructive" },
+  ACCEPTED: { label: "Acceptée", variant: "success" },
+  REJECTED: { label: "Refusée", variant: "destructive" },
+    EXPIRED: { label: "Expirée", variant: "destructive" },
   };
 
 export function RequestStatusBadge({ status }: { status: string }) {

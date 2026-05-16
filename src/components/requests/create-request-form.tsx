@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ interface CreateRequestFormProps {
 
 const countries = [
   "France",
-  "Ã‰tats-Unis",
+  "États-Unis",
   "Royaume-Uni",
   "Allemagne",
   "Espagne",
@@ -73,11 +73,11 @@ export function CreateRequestForm({ categories }: CreateRequestFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description dÃ©taillÃ©e</Label>
+        <Label htmlFor="description">Description détaillée</Label>
         <Textarea
           id="description"
           name="description"
-          placeholder="DÃ©crivez le produit, la rÃ©fÃ©rence, les spÃ©cifications souhaitÃ©es..."
+          placeholder="Décrivez le produit, la référence, les spécifications souhaitées..."
           required
           minLength={10}
           rows={4}
@@ -100,7 +100,7 @@ export function CreateRequestForm({ categories }: CreateRequestFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="countryToBuyFrom">Pays d'achat souhaitÃ©</Label>
+          <Label htmlFor="countryToBuyFrom">Pays d'achat souhaité</Label>
           <Select id="countryToBuyFrom" name="countryToBuyFrom" required>
             <option value="">Choisir...</option>
             {countries.map((c) => (
@@ -111,13 +111,13 @@ export function CreateRequestForm({ categories }: CreateRequestFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="images">Images (URLs sÃ©parÃ©es par des virgules)</Label>
+        <Label htmlFor="images">Images (URLs séparées par des virgules)</Label>
         <Input
           id="images"
           name="images"
           placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
         />
-        <p className="text-xs text-slate-500">Optionnel. Collez les liens d'images sÃ©parÃ©s par des virgules.</p>
+        <p className="text-xs text-slate-500">Optionnel. Collez les liens d'images séparés par des virgules.</p>
       </div>
 
       <Button type="submit" className="w-full" disabled={pending}>

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { getClientRequests } from "@/app/actions/requests";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export default async function UserRequestsPage() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="font-semibold text-slate-900">{request.title}</p>
-                    <p className="text-sm text-slate-500">{request.category.name} Â· {formatPrice(request.budget)} Â· {formatDate(request.createdAt)}</p>
+                    <p className="text-sm text-slate-500">{request.category.name} · {formatPrice(request.budget)} · {formatDate(request.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <RequestStatusBadge status={request.status} />
