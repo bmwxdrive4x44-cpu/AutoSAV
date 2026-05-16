@@ -181,11 +181,27 @@ export default async function HomePage({
 }: {
   searchParams?: { lang?: string };
 }) {
-  const [requests, user, categories] = await Promise.all([
+  const [requestsResult, userResult, categoriesResult] = await Promise.allSettled([
     getPublicRequests(),
     getCurrentUser(),
     getCategories(),
   ]);
+
+  const requests = requestsResult.status === "fulfilled" ? requestsResult.value : [];
+  const user = userResult.status === "fulfilled" ? userResult.value : null;
+  const categories = categoriesResult.status === "fulfilled" ? categoriesResult.value : [];
+
+  if (
+    requestsResult.status === "rejected" ||
+    userResult.status === "rejected" ||
+    categoriesResult.status === "rejected"
+  ) {
+    console.error("HomePage data loading failed:", {
+      requestsError: requestsResult.status === "rejected" ? requestsResult.reason : null,
+      userError: userResult.status === "rejected" ? userResult.reason : null,
+      categoriesError: categoriesResult.status === "rejected" ? categoriesResult.reason : null,
+    });
+  }
   const lang = normalizeLang(searchParams?.lang);
   const isRtl = textDir(lang) === "rtl";
   const t = COPY[lang];
