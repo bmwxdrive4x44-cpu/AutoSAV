@@ -17,6 +17,10 @@ interface RequestCardProps {
     budget: number;
     countryToBuyFrom: string;
     status: string;
+    requester?: {
+      id: string;
+      name?: string;
+    };
     category?: {
       id: string;
       name: string;
@@ -80,10 +84,14 @@ function getMarketplaceStatus(
 export function RequestCard({ request, user, ctaLabel = "Make an offer", labels, isRtl = false }: RequestCardProps) {
   const t = { ...DEFAULT_LABELS, ...(labels ?? {}) };
   const marketplaceStatus = getMarketplaceStatus(request.status, labels);
-  const canActAsProvider = !!user && user.role !== "ADMIN";
+  const isOwnRequest = !!user && !!request.requester?.id && user.id === request.requester.id;
+  const canActAsProvider = !!user && user.role !== "ADMIN" && !isOwnRequest;
   const ctaHref = canActAsProvider
     ? `/request/${request.id}`
-    : `/login?redirect=/request/${request.id}&action=offer`;
+    : isOwnRequest
+      ? "/dashboard/requests"
+      : `/login?redirect=/request/${request.id}&action=offer`;
+  const ctaText = isOwnRequest ? "Voir ma demande" : ctaLabel;
 
   return (
     <Card className="group h-full overflow-hidden border border-slate-300 bg-slate-50 shadow-sm hover:shadow-xl hover:border-primary-300 transition-all duration-300">
@@ -150,9 +158,14 @@ export function RequestCard({ request, user, ctaLabel = "Make an offer", labels,
         <Link href={ctaHref} className="block">
           <Button 
             size="sm" 
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white shadow-sm hover:shadow-md transition-all group-hover:shadow-lg"
+            variant={isOwnRequest ? "outline" : "default"}
+            className={
+              isOwnRequest
+                ? "w-full"
+                : "w-full bg-primary-600 hover:bg-primary-700 text-white shadow-sm hover:shadow-md transition-all group-hover:shadow-lg"
+            }
           >
-            {ctaLabel}
+            {ctaText}
           </Button>
         </Link>
       </CardContent>

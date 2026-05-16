@@ -104,7 +104,7 @@ export async function getPublicRequests() {
       deletedAt: null,
     },
     include: {
-      requester: { select: { name: true } },
+      requester: { select: { id: true, name: true } },
       category: true,
       _count: { select: { offers: true } },
     },
