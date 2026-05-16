@@ -44,7 +44,13 @@ const HEADER_COPY: Record<
 };
 
 export async function Header({ lang = "fr" }: { lang?: Lang }) {
-  const user = await getCurrentUser();
+  let user: Awaited<ReturnType<typeof getCurrentUser>> = null;
+
+  try {
+    user = await getCurrentUser();
+  } catch (error) {
+    console.error("Header user fetch failed:", error);
+  }
   const t = HEADER_COPY[lang];
   const navLinks = [
     { href: withLang("/", lang), label: t.home },
