@@ -45,20 +45,26 @@ export async function getSession() {
 }
 
 export async function getCurrentUser() {
-  const session = await getSession();
-  if (!session) return null;
-  return prisma.user.findUnique({
-    where: { id: session.userId },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-      phone: true,
-      agentValidationStatus: true,
-      isBlocked: true,
-    },
-  });
+  try {
+    const session = await getSession();
+    if (!session) return null;
+
+    return prisma.user.findUnique({
+      where: { id: session.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        phone: true,
+        agentValidationStatus: true,
+        isBlocked: true,
+      },
+    });
+  } catch (error) {
+    console.error("getCurrentUser failed:", error);
+    return null;
+  }
 }
 
 export async function requireAuth() {
