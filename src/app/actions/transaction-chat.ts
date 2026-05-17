@@ -34,23 +34,23 @@ async function ensureSchema() {
   if (!ensureSchemaPromise) {
     ensureSchemaPromise = (async () => {
       await prisma.$executeRawUnsafe(`
-        CREATE TABLE IF NOT EXISTS TransactionMessage (
-          id TEXT PRIMARY KEY NOT NULL,
-          requestId TEXT NOT NULL,
-          offerId TEXT,
-          senderId TEXT NOT NULL,
-          body TEXT NOT NULL,
-          createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (requestId) REFERENCES ProductRequest(id) ON DELETE CASCADE,
-          FOREIGN KEY (offerId) REFERENCES Offer(id) ON DELETE SET NULL,
-          FOREIGN KEY (senderId) REFERENCES User(id) ON DELETE CASCADE
+        CREATE TABLE IF NOT EXISTS "TransactionMessage" (
+          "id" TEXT PRIMARY KEY NOT NULL,
+          "requestId" TEXT NOT NULL,
+          "offerId" TEXT,
+          "senderId" TEXT NOT NULL,
+          "body" TEXT NOT NULL,
+          "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY ("requestId") REFERENCES "ProductRequest"("id") ON DELETE CASCADE,
+          FOREIGN KEY ("offerId") REFERENCES "Offer"("id") ON DELETE SET NULL,
+          FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE CASCADE
         )
       `);
       await prisma.$executeRawUnsafe(
-        `CREATE INDEX IF NOT EXISTS TransactionMessage_requestId_createdAt_idx ON TransactionMessage(requestId, createdAt)`
+        `CREATE INDEX IF NOT EXISTS "TransactionMessage_requestId_createdAt_idx" ON "TransactionMessage"("requestId", "createdAt")`
       );
       await prisma.$executeRawUnsafe(
-        `CREATE INDEX IF NOT EXISTS TransactionMessage_offerId_createdAt_idx ON TransactionMessage(offerId, createdAt)`
+        `CREATE INDEX IF NOT EXISTS "TransactionMessage_offerId_createdAt_idx" ON "TransactionMessage"("offerId", "createdAt")`
       );
     })();
   }
@@ -98,22 +98,22 @@ export async function getTransactionChat(requestId: string, viewerId?: string | 
 
   const messages = await prisma.$queryRaw<ChatRow[]>`
     SELECT
-      m.id,
-      m.requestId,
-      m.offerId,
-      m.senderId,
-      u.name AS senderName,
-      u.role AS senderRole,
-      u.trustScore AS senderTrustScore,
-      m.body,
-      m.createdAt,
-      o.price AS offerPrice,
-      o.status AS offerStatus
-    FROM TransactionMessage AS m
-    INNER JOIN User AS u ON u.id = m.senderId
-    LEFT JOIN Offer AS o ON o.id = m.offerId
-    WHERE m.requestId = ${requestId}
-    ORDER BY m.createdAt ASC
+      m."id",
+      m."requestId",
+      m."offerId",
+      m."senderId",
+      u."name" AS "senderName",
+      u."role" AS "senderRole",
+      u."trustScore" AS "senderTrustScore",
+      m."body",
+      m."createdAt",
+      o."price" AS "offerPrice",
+      o."status" AS "offerStatus"
+    FROM "TransactionMessage" AS m
+    INNER JOIN "User" AS u ON u."id" = m."senderId"
+    LEFT JOIN "Offer" AS o ON o."id" = m."offerId"
+    WHERE m."requestId" = ${requestId}
+    ORDER BY m."createdAt" ASC
   `;
 
   const defaultOfferId = isAgentParticipant
@@ -184,7 +184,7 @@ export async function sendTransactionChatMessage(formData: FormData) {
   }
 
   await prisma.$executeRaw`
-    INSERT INTO TransactionMessage (id, requestId, offerId, senderId, body)
+    INSERT INTO "TransactionMessage" ("id", "requestId", "offerId", "senderId", "body")
     VALUES (${randomUUID()}, ${data.requestId}, ${selectedOffer?.id ?? null}, ${user.id}, ${data.message})
   `;
 

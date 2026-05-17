@@ -11,6 +11,8 @@ import { formatPrice } from "@/lib/utils";
 import { MapPin, ArrowLeft } from "lucide-react";
 import { getTransactionChat } from "@/app/actions/transaction-chat";
 
+type TransactionChatData = Awaited<ReturnType<typeof getTransactionChat>>;
+
 export default async function RequestDetailPage({ params }: { params: { id: string } }) {
   const request = await getRequestById(params.id);
   const user = await getCurrentUser();
@@ -24,7 +26,22 @@ export default async function RequestDetailPage({ params }: { params: { id: stri
     user.role !== "ADMIN" &&
     user.id !== request.requesterId &&
     (request.status === "REQUEST_CREATED" || request.status === "OFFERS_RECEIVED");
-  const chat = await getTransactionChat(request.id, user?.id ?? null);
+  let chat: TransactionChatData = {
+    canView: false,
+    canSend: false,
+    defaultOfferId: null,
+    messages: [],
+    offerOptions: [],
+  };
+
+  try {
+    chat = await getTransactionChat(request.id, user?.id ?? null);
+  } catch (error) {
+    console.error("RequestDetailPage chat loading failed:", {
+      requestId: request.id,
+      error,
+    });
+  }
 
   const workflowSteps = [
     "Demande",
