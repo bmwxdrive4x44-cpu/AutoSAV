@@ -33,11 +33,11 @@ const COPY: Record<
     browseAll: "Browse all categories",
   },
   ar: {
-    breadcrumbs: ["Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©", "Ø§Ù„ÙØ¦Ø§Øª"],
-    requests: "Ø·Ù„Ø¨Ø§Øª",
-    noRequests: "Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©",
-    noRequestsDesc: "Ø¹Ø¯ Ù…Ø¬Ø¯Ø¯Ø§ Ù‚Ø±ÙŠØ¨Ø§ Ù„Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø·Ù„Ø¨Ø§Øª Ù…ØªØ§Ø­Ø©.",
-    browseAll: "Ø´ÙˆÙ ÙƒÙ„ Ø§Ù„ÙØ¦Ø§Øª",
+    breadcrumbs: ["الرئيسية", "الفئات"],
+    requests: "طلبات",
+    noRequests: "لا توجد طلبات في هذه الفئة",
+    noRequestsDesc: "عد قريبًا لاكتشاف الطلبات المتاحة.",
+    browseAll: "تصفح كل الفئات",
   },
 };
 
@@ -72,13 +72,13 @@ export default async function CategoryPage({
   const user = await getCurrentUser();
 
   const cardLabels = {
-    budget: lang === "fr" ? "Budget" : lang === "ar" ? "Ø§Ù„Ù…ÙŠØ²Ø§Ù†ÙŠØ©" : "Budget",
-    from: lang === "fr" ? "Depuis" : lang === "ar" ? "Ù…Ù†" : "From",
-    active: lang === "fr" ? "Actif" : lang === "ar" ? "Ù†Ø´Ø·" : "Active",
+    budget: lang === "fr" ? "Budget" : lang === "ar" ? "الميزانية" : "Budget",
+    from: lang === "fr" ? "Depuis" : lang === "ar" ? "من" : "From",
+    active: lang === "fr" ? "Actif" : lang === "ar" ? "نشط" : "Active",
   };
 
   const ctaLabel =
-    lang === "fr" ? "Faire une offre" : lang === "ar" ? "Ù‚Ø¯Ù‘Ù… Ø¹Ø±Ø¶" : "Make an offer";
+    lang === "fr" ? "Faire une offre" : lang === "ar" ? "قدّم عرض" : "Make an offer";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100">
@@ -103,7 +103,7 @@ export default async function CategoryPage({
             <div className="flex items-center gap-4 mb-6">
               {category.icon && (
                 <div className="w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center">
-                  <span className="text-2xl">ðŸ“¦</span>
+                  <span className="text-2xl">📦</span>
                 </div>
               )}
               <div>
