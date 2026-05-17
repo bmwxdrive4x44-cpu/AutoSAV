@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { RequestCard } from "@/components/requests/request-card";
 import { getRequestsByCategory, getCategoryBySlug } from "@/app/actions/categories";
 import { getCurrentUser } from "@/lib/auth";
-import { normalizeLang, textDir, withLang } from "@/lib/i18n";
+import { getCategoryLabel, normalizeLang, textDir, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { ChevronRight, Package } from "lucide-react";
 
@@ -69,6 +69,8 @@ export default async function CategoryPage({
     notFound();
   }
 
+  const categoryDisplayName = getCategoryLabel(category.slug, lang, category.name);
+
   const user = await getCurrentUser();
 
   const cardLabels = {
@@ -95,7 +97,7 @@ export default async function CategoryPage({
               {t.breadcrumbs[0]}
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-slate-900 font-medium">{category.name}</span>
+            <span className="text-slate-900 font-medium">{categoryDisplayName}</span>
           </div>
 
           {/* Header */}
@@ -108,7 +110,7 @@ export default async function CategoryPage({
               )}
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
-                  {category.name}
+                  {categoryDisplayName}
                 </h1>
                 <p className="text-slate-600 mt-2">
                   {total} {total === 1 ? t.requests.slice(0, -1) : t.requests}
@@ -143,6 +145,7 @@ export default async function CategoryPage({
                     ctaLabel={ctaLabel}
                     labels={cardLabels}
                     isRtl={isRtl}
+                    lang={lang}
                   />
                 ))}
               </div>

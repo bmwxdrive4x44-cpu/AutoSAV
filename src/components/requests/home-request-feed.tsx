@@ -237,6 +237,7 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
                   ctaLabel={t.makeOffer}
                   labels={t.card}
                   isRtl={isRtl}
+                  lang={lang}
                 />
               ))}
             </div>

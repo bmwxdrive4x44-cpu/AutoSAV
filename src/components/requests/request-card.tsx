@@ -2,6 +2,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CategoryBadge } from "@/components/categories";
+import { getCategoryLabel } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 import { MapPin, TrendingUp, Clock } from "lucide-react";
 
@@ -40,6 +42,7 @@ interface RequestCardProps {
     statusOpen: string;
   }>;
   isRtl?: boolean;
+  lang?: Lang;
 }
 
 const DEFAULT_LABELS = {
@@ -81,10 +84,13 @@ function getMarketplaceStatus(
   };
 }
 
-export function RequestCard({ request, user, ctaLabel = "Make an offer", labels, isRtl = false }: RequestCardProps) {
+export function RequestCard({ request, user, ctaLabel = "Make an offer", labels, isRtl = false, lang = "fr" }: RequestCardProps) {
   const t = { ...DEFAULT_LABELS, ...(labels ?? {}) };
   const marketplaceStatus = getMarketplaceStatus(request.status, labels);
   const isOwnRequest = !!user && !!request.requester?.id && user.id === request.requester.id;
+  const categoryLabel = request.category
+    ? getCategoryLabel(request.category.slug, lang, request.category.name)
+    : undefined;
   const canActAsProvider = !!user && user.role !== "ADMIN" && !isOwnRequest;
   const ctaHref = canActAsProvider
     ? `/request/${request.id}`
@@ -108,7 +114,7 @@ export function RequestCard({ request, user, ctaLabel = "Make an offer", labels,
         {/* Category badge */}
         {request.category && (
           <CategoryBadge
-            categoryName={request.category.name}
+            categoryName={categoryLabel ?? request.category.name}
             categorySlug={request.category.slug}
             categoryIcon={request.category.icon}
             asLink={true}

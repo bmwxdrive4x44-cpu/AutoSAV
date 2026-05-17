@@ -1,6 +1,49 @@
 ﻿export type Lang = "fr" | "en" | "ar";
 export type AuthErrorCode = "invalid_credentials" | "invalid_form" | "email_exists";
 
+const CATEGORY_LABELS: Record<string, Record<Lang, string>> = {
+  "auto-parts": {
+    fr: "Pieces Auto",
+    en: "Auto Parts",
+    ar: "قطع السيارات",
+  },
+  electronics: {
+    fr: "Electronique",
+    en: "Electronics",
+    ar: "إلكترونيات",
+  },
+  "gaming-it": {
+    fr: "Gaming & IT",
+    en: "Gaming & IT",
+    ar: "الألعاب وتقنية المعلومات",
+  },
+  fashion: {
+    fr: "Mode",
+    en: "Fashion",
+    ar: "موضة",
+  },
+  beauty: {
+    fr: "Beaute",
+    en: "Beauty",
+    ar: "الجمال",
+  },
+  tools: {
+    fr: "Outils",
+    en: "Tools",
+    ar: "أدوات",
+  },
+  health: {
+    fr: "Sante",
+    en: "Health",
+    ar: "الصحة",
+  },
+  other: {
+    fr: "Autre",
+    en: "Other",
+    ar: "اخرى",
+  },
+};
+
 const AUTH_ERROR_MESSAGES: Record<Lang, Record<AuthErrorCode, string>> = {
   fr: {
     invalid_credentials: "Email ou mot de passe invalide.",
@@ -50,5 +93,9 @@ export function getAuthErrorMessage(lang: Lang, error?: string): string | null {
   }
 
   return null;
+}
+
+export function getCategoryLabel(slug: string, lang: Lang, fallbackName?: string): string {
+  return CATEGORY_LABELS[slug]?.[lang] ?? fallbackName ?? slug;
 }
 

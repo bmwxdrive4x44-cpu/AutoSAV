@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getCategories } from "@/app/actions/categories";
 import { HomeRequestFeed } from "@/components/requests/home-request-feed";
 import { CategoryCard } from "@/components/categories";
-import { normalizeLang, textDir, withLang } from "@/lib/i18n";
+import { getCategoryLabel, normalizeLang, textDir, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { ArrowRight, Globe, Zap, Shield, Package, MessagesSquare, Handshake, CheckCircle2 } from "lucide-react";
 
@@ -325,7 +325,7 @@ export default async function HomePage({
             {categories.map((category) => (
               <Link key={category.id} href={withLang(`/category/${category.slug}`, lang)}>
                 <CategoryCard
-                  name={category.name}
+                  name={getCategoryLabel(category.slug, lang, category.name)}
                   slug={category.slug}
                   icon={category.icon}
                 />
