@@ -44,6 +44,18 @@ export async function getSession() {
   return verifyToken(token);
 }
 
+function isExpectedDynamicUsageError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const dynamicError = error as { digest?: string; description?: string };
+  return (
+    dynamicError.digest === "DYNAMIC_SERVER_USAGE" ||
+    dynamicError.description?.includes("Dynamic server usage") === true
+  );
+}
+
 export async function getCurrentUser() {
   try {
     const session = await getSession();
@@ -62,7 +74,9 @@ export async function getCurrentUser() {
       },
     });
   } catch (error) {
-    console.error("getCurrentUser failed:", error);
+    if (!isExpectedDynamicUsageError(error)) {
+      console.error("getCurrentUser failed:", error);
+    }
     return null;
   }
 }
