@@ -3,7 +3,20 @@ import { getCurrentUser } from "@/lib/auth";
 import { RequestCard } from "@/components/requests/request-card";
 
 export default async function RequestsMarketPage() {
-  const [requests, user] = await Promise.all([getPublicRequests(), getCurrentUser()]);
+  const [requestsResult, userResult] = await Promise.allSettled([
+    getPublicRequests(),
+    getCurrentUser(),
+  ]);
+
+  const requests = requestsResult.status === "fulfilled" ? requestsResult.value : [];
+  const user = userResult.status === "fulfilled" ? userResult.value : null;
+
+  if (requestsResult.status === "rejected" || userResult.status === "rejected") {
+    console.error("RequestsMarketPage data loading failed:", {
+      requestsError: requestsResult.status === "rejected" ? requestsResult.reason : null,
+      userError: userResult.status === "rejected" ? userResult.reason : null,
+    });
+  }
 
   return (
     <div className="space-y-6">
