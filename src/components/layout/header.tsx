@@ -34,12 +34,12 @@ const HEADER_COPY: Record<
     getStarted: "Get Started",
   },
   ar: {
-    home: "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©",
-    requests: "Ø§Ù„Ø·Ù„Ø¨Ø§Øª",
-    contact: "Ø§ØªØµØ§Ù„",
-    dashboard: "Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…",
-    signIn: "ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„",
-    getStarted: "Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨",
+    home: "الرئيسية",
+    requests: "الطلبات",
+    contact: "اتصال",
+    dashboard: "لوحة التحكم",
+    signIn: "تسجيل الدخول",
+    getStarted: "إنشاء حساب",
   },
 };
 
