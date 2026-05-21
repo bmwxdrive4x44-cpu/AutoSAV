@@ -13,7 +13,10 @@ type NotifyContext = {
 };
 
 const BRAND_NAME = "AutoSAV";
-const APP_BASE_URL = process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+const APP_BASE_URL =
+  process.env.APP_BASE_URL ||
+  process.env.NEXT_PUBLIC_APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 function buildSubject(title: string) {
   return `[${BRAND_NAME}] ${title}`;

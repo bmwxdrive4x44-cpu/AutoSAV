@@ -1,5 +1,4 @@
 ﻿import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/actions/auth";
@@ -7,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuthErrorMessage, normalizeLang, textDir, withLang } from "@/lib/i18n";
 import { getLoginCopy } from "@/lib/auth-copy";
+import { LoginSubmitButton } from "@/components/auth/login-submit-button";
 
 export default function LoginPage({
   searchParams,
@@ -19,6 +19,7 @@ export default function LoginPage({
   const t = getLoginCopy(lang);
   const isRtl = textDir(lang) === "rtl";
   const errorMessage = getAuthErrorMessage(lang, searchParams.error);
+  const pendingLabel = lang === "fr" ? "Connexion..." : lang === "ar" ? "جار تسجيل الدخول..." : "Signing in...";
 
   const registerHref = withLang(
     `/register${redirectUrl ? `?redirect=${redirectUrl}&action=${searchParams.action}&role=${searchParams.role}` : ""}`,
@@ -58,9 +59,7 @@ export default function LoginPage({
                   <Label htmlFor="password">{t.password}</Label>
                   <Input id="password" name="password" type="password" required />
                 </div>
-                <Button type="submit" className="w-full">
-                  {t.submit}
-                </Button>
+                <LoginSubmitButton idleLabel={t.submit} pendingLabel={pendingLabel} />
               </form>
               <p className="text-center text-sm text-slate-500 mt-4">
                 {t.noAccount} <Link href={registerHref} className="text-primary-600 hover:underline">{t.signUp}</Link>

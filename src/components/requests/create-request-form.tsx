@@ -33,6 +33,13 @@ const countries = [
   "Autre",
 ];
 
+const urgencyLevels = [
+  { value: "LOW", label: "Faible" },
+  { value: "MEDIUM", label: "Moyenne" },
+  { value: "HIGH", label: "Haute" },
+  { value: "CRITICAL", label: "Critique" },
+];
+
 export function CreateRequestForm({ categories }: CreateRequestFormProps) {
   const [pending, setPending] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -105,6 +112,47 @@ export function CreateRequestForm({ categories }: CreateRequestFormProps) {
             <option value="">Choisir...</option>
             {countries.map((c) => (
               <option key={c} value={c}>{c}</option>
+            ))}
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="pickupCity">Ville de depart (optionnel)</Label>
+          <Input id="pickupCity" name="pickupCity" placeholder="Ex: Lyon" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="destinationCountry">Pays de destination (optionnel)</Label>
+          <Input id="destinationCountry" name="destinationCountry" placeholder="Ex: Algerie" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="destinationCity">Ville de destination (optionnel)</Label>
+          <Input id="destinationCity" name="destinationCity" placeholder="Ex: Alger" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="desiredShippingDate">Date souhaitee d'arrivee (optionnel)</Label>
+          <Input id="desiredShippingDate" name="desiredShippingDate" type="date" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="packageWeightKg">Poids colis (kg)</Label>
+          <Input id="packageWeightKg" name="packageWeightKg" type="number" min="0.1" step="0.1" placeholder="5" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="packageVolumeM3">Volume colis (m3)</Label>
+          <Input id="packageVolumeM3" name="packageVolumeM3" type="number" min="0.001" step="0.001" placeholder="0.04" />
+        </div>
+
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="urgency">Niveau d'urgence</Label>
+          <Select id="urgency" name="urgency" defaultValue="MEDIUM">
+            {urgencyLevels.map((level) => (
+              <option key={level.value} value={level.value}>{level.label}</option>
             ))}
           </Select>
         </div>

@@ -6,6 +6,7 @@ import {
   toggleFeaturedRequest,
   markRequestAsScam,
   closeRequest,
+  reopenRequest,
 } from "@/app/actions/admin";
 
 interface RequestsManagementProps {
@@ -212,6 +213,7 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Client</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Budget</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Offre acceptée</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -222,6 +224,20 @@ export function RequestsManagement({ requests, onReload }: RequestsManagementPro
                   <td className="px-6 py-3 text-sm text-slate-600">{Math.floor(req.budget)} DZD</td>
                   <td className="px-6 py-3 text-sm text-slate-600">
                     {req.acceptedOffer ? `${Math.floor(req.acceptedOffer.price)} DZD` : "-"}
+                  </td>
+                  <td className="px-6 py-3 text-sm">
+                    <button
+                      onClick={() => {
+                        if (!window.confirm("Confirmer la réactivation de cette demande ?")) {
+                          return;
+                        }
+                        return handleAction(req.id, () => reopenRequest(req.id));
+                      }}
+                      disabled={!!actionPending[req.id]}
+                      className="px-2 py-1 rounded text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
+                    >
+                      Réactiver
+                    </button>
                   </td>
                 </tr>
               ))}

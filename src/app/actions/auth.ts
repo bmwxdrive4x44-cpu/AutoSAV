@@ -8,6 +8,50 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword, createToken, normalizeUserRole } from "@/lib/auth";
 import { UserRole } from "@/types";
 
+function isDatabaseUnavailableError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const maybeError = error as { code?: string; message?: string };
+  if (maybeError.code === "P1001" || maybeError.code === "P1002" || maybeError.code === "P1017") {
+    return true;
+  }
+
+  const message = maybeError.message || "";
+  return (
+    message.includes("Can't reach database server") ||
+    message.includes("ECONNREFUSED") ||
+    message.includes("Connection terminated") ||
+    message.includes("ENOIDENTIFIER") ||
+    message.includes("no tenant identifier provided")
+  );
+}
+
+async function runDbOpWithRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 1,
+  retryDelayMs = 250
+): Promise<T> {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+
+      if (!isDatabaseUnavailableError(error) || attempt === maxRetries) {
+        throw error;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs * (attempt + 1)));
+    }
+  }
+
+  throw lastError;
+}
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -68,7 +112,36 @@ export async function login(formData: FormData) {
 
   const data = parsed.data;
 
-  const user = await prisma.user.findUnique({ where: { email: data.email } });
+  let user:
+    | {
+        id: string;
+        email: string;
+        password: string;
+        role: string;
+      }
+    | null = null;
+  try {
+    user = await runDbOpWithRetry(
+      () =>
+        prisma.user.findUnique({
+          where: { email: data.email },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            role: true,
+          },
+        }),
+      1,
+      300
+    );
+  } catch (error) {
+    if (isDatabaseUnavailableError(error)) {
+      console.error("login database unavailable:", error);
+      redirect(toLoginErrorUrl("db_unavailable"));
+    }
+    throw error;
+  }
   if (!user) redirect(toLoginErrorUrl("invalid_credentials"));
 
   const valid = await verifyPassword(data.password, user.password);
@@ -142,21 +215,60 @@ export async function register(formData: FormData) {
 
   const data = parsed.data;
 
-  const existing = await prisma.user.findUnique({ where: { email: data.email } });
+  let existing:
+    | {
+        id: string;
+        email: string;
+      }
+    | null = null;
+  try {
+    existing = await runDbOpWithRetry(
+      () =>
+        prisma.user.findUnique({
+          where: { email: data.email },
+          select: {
+            id: true,
+            email: true,
+          },
+        }),
+      1,
+      300
+    );
+  } catch (error) {
+    if (isDatabaseUnavailableError(error)) {
+      console.error("register database unavailable during pre-check:", error);
+      redirect(toRegisterErrorUrl("db_unavailable"));
+    }
+    throw error;
+  }
   if (existing) redirect(toRegisterErrorUrl("email_exists"));
 
   const hashed = await hashPassword(data.password);
 
-  const user = await prisma.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      password: hashed,
-      phone: data.phone || null,
-      role: UserRole.USER,
-      agentValidationStatus: "NOT_APPLICABLE",
-    },
-  });
+  let user: Awaited<ReturnType<typeof prisma.user.create>>;
+  try {
+    user = await runDbOpWithRetry(
+      () =>
+        prisma.user.create({
+          data: {
+            name: data.name,
+            email: data.email,
+            password: hashed,
+            phone: data.phone || null,
+            role: UserRole.USER,
+            agentValidationStatus: "NOT_APPLICABLE",
+          },
+        }),
+      1,
+      300
+    );
+  } catch (error) {
+    if (isDatabaseUnavailableError(error)) {
+      console.error("register database unavailable during create:", error);
+      redirect(toRegisterErrorUrl("db_unavailable"));
+    }
+    throw error;
+  }
 
   const token = await createToken({
     userId: user.id,

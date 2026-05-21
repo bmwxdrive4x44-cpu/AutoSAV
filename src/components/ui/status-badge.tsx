@@ -7,12 +7,12 @@ const statusColors: Record<string, { bg: string; text: string; label: string }> 
     REQUEST_CREATED: {
       bg: "bg-blue-100",
       text: "text-blue-800",
-      label: "Nouvelle demande",
+      label: "Proposition ouverte",
     },
     OFFERS_RECEIVED: {
       bg: "bg-yellow-100",
       text: "text-yellow-800",
-      label: "Offres reçues",
+      label: "Propositions reçues",
     },
     OFFER_ACCEPTED: {
       bg: "bg-green-100",

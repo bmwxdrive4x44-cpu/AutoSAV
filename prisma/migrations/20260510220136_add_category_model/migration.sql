@@ -1,56 +1,57 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `category` on the `ProductRequest` table. All the data in the column will be lost.
-  - Added the required column `categoryId` to the `ProductRequest` table without a default value. This is not possible if the table is not empty.
-
-*/
--- CreateTable
-CREATE TABLE "Category" (
+CREATE TABLE IF NOT EXISTS "Category" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "icon" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- RedefineTables
-PRAGMA defer_foreign_keys=ON;
-PRAGMA foreign_keys=OFF;
-CREATE TABLE "new_ProductRequest" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "budget" REAL NOT NULL,
-    "countryToBuyFrom" TEXT NOT NULL,
-    "images" TEXT NOT NULL DEFAULT '',
-    "status" TEXT NOT NULL DEFAULT 'REQUEST_CREATED',
-    "deletedAt" DATETIME,
-    "deletionReason" TEXT,
-    "isFeatured" BOOLEAN NOT NULL DEFAULT false,
-    "isSuspicious" BOOLEAN NOT NULL DEFAULT false,
-    "suspiciousReason" TEXT,
-    "markedAsScam" BOOLEAN NOT NULL DEFAULT false,
-    "scamReason" TEXT,
-    "scamMarkedAt" DATETIME,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "categoryId" TEXT NOT NULL,
-    "clientId" TEXT NOT NULL,
-    "acceptedOfferId" TEXT,
-    CONSTRAINT "ProductRequest_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "ProductRequest_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "ProductRequest_acceptedOfferId_fkey" FOREIGN KEY ("acceptedOfferId") REFERENCES "Offer" ("id") ON DELETE SET NULL ON UPDATE CASCADE
-);
-INSERT INTO "new_ProductRequest" ("acceptedOfferId", "budget", "clientId", "countryToBuyFrom", "createdAt", "deletedAt", "deletionReason", "description", "id", "images", "isFeatured", "isSuspicious", "markedAsScam", "scamMarkedAt", "scamReason", "status", "suspiciousReason", "title", "updatedAt") SELECT "acceptedOfferId", "budget", "clientId", "countryToBuyFrom", "createdAt", "deletedAt", "deletionReason", "description", "id", "images", "isFeatured", "isSuspicious", "markedAsScam", "scamMarkedAt", "scamReason", "status", "suspiciousReason", "title", "updatedAt" FROM "ProductRequest";
-DROP TABLE "ProductRequest";
-ALTER TABLE "new_ProductRequest" RENAME TO "ProductRequest";
-CREATE UNIQUE INDEX "ProductRequest_acceptedOfferId_key" ON "ProductRequest"("acceptedOfferId");
-PRAGMA foreign_keys=ON;
-PRAGMA defer_foreign_keys=OFF;
+CREATE UNIQUE INDEX IF NOT EXISTS "Category_name_key" ON "Category"("name");
+CREATE UNIQUE INDEX IF NOT EXISTS "Category_slug_key" ON "Category"("slug");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+ALTER TABLE "ProductRequest" ADD COLUMN IF NOT EXISTS "categoryId" TEXT;
 
--- CreateIndex
-CREATE UNIQUE INDEX "Category_slug_key" ON "Category"("slug");
+INSERT INTO "Category" ("id", "name", "slug", "icon", "createdAt")
+VALUES ('legacy-other', 'Other', 'other', NULL, CURRENT_TIMESTAMP)
+ON CONFLICT ("id") DO NOTHING;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'ProductRequest' AND column_name = 'category'
+  ) THEN
+    INSERT INTO "Category" ("id", "name", "slug", "icon", "createdAt")
+    SELECT DISTINCT
+      'legacy-' || md5("category"),
+      "category",
+      regexp_replace(lower("category"), '[^a-z0-9]+', '-', 'g'),
+      NULL,
+      CURRENT_TIMESTAMP
+    FROM "ProductRequest"
+    WHERE "category" IS NOT NULL AND trim("category") <> ''
+    ON CONFLICT ("id") DO NOTHING;
+
+    UPDATE "ProductRequest" pr
+    SET "categoryId" = 'legacy-' || md5(pr."category")
+    WHERE pr."categoryId" IS NULL
+      AND pr."category" IS NOT NULL
+      AND trim(pr."category") <> '';
+  END IF;
+END $$;
+
+UPDATE "ProductRequest"
+SET "categoryId" = 'legacy-other'
+WHERE "categoryId" IS NULL;
+
+ALTER TABLE "ProductRequest" ALTER COLUMN "categoryId" SET NOT NULL;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ProductRequest_categoryId_fkey') THEN
+    ALTER TABLE "ProductRequest"
+      ADD CONSTRAINT "ProductRequest_categoryId_fkey"
+      FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+  END IF;
+END $$;
+
+ALTER TABLE "ProductRequest" DROP COLUMN IF EXISTS "category";

@@ -3,16 +3,20 @@
 import { Badge } from "@/components/ui/badge";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "success" | "warning" | "destructive" }> = {
-  REQUEST_CREATED: { label: "Nouvelle demande", variant: "secondary" },
-  OFFERS_RECEIVED: { label: "Offres reçues", variant: "warning" },
+  REQUEST_CREATED: { label: "Proposition ouverte", variant: "secondary" },
+  OFFERS_RECEIVED: { label: "Propositions reçues", variant: "warning" },
   OFFER_ACCEPTED: { label: "Offre acceptée", variant: "default" },
   PAYMENT_PENDING: { label: "Paiement en attente", variant: "warning" },
   PURCHASE_IN_PROGRESS: { label: "Achat en cours", variant: "default" },
   SHIPPED: { label: "Expédié", variant: "default" },
   DELIVERED: { label: "Livré", variant: "success" },
   PAYMENT_RELEASED: { label: "Terminé", variant: "success" },
+  REQUEST_CLOSED: { label: "Fermée par l'admin", variant: "destructive" },
+  CANCELLED: { label: "Annulée", variant: "destructive" },
+  DISPUTE_OPEN: { label: "Litige ouvert", variant: "destructive" },
+  DISPUTE_RESOLVED: { label: "Litige résolu", variant: "success" },
   PENDING: { label: "En attente", variant: "warning" },
-  ACCEPTED: { label: "Acceptée", variant: "success" },
+  ACCEPTED: { label: "Accepté", variant: "success" },
   REJECTED: { label: "Refusée", variant: "destructive" },
     EXPIRED: { label: "Expirée", variant: "destructive" },
   };

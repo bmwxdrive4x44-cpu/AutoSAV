@@ -328,7 +328,7 @@ export async function toggleUserBlock(userId: string, reason?: string) {
     phoneVerifiedAt: user.phoneVerifiedAt,
   });
 
-  await prisma.user.update({
+  await prisma.user.updateMany({
     where: { id: userId },
     data: {
       isBlocked: nextBlockedState,
@@ -460,74 +460,55 @@ export async function getAdminDashboardStats() {
   fromDate.setHours(0, 0, 0, 0);
   fromDate.setDate(fromDate.getDate() - 6);
 
-  const [
-    totalUsers,
-    totalRequests,
-    totalOffers,
-    totalTransactions,
-    pendingTransactions,
-    activeUsers,
-    activeProviders,
-    openRequests,
-    dealsInProgress,
-    requestsByStatus,
-    recentRequests,
-    recentOffers,
-    requestsWithOffers,
-    totalShipments,
-    deliveredShipments,
-    volumeByCountry,
-    agents,
-  ] = await Promise.all([
-    prisma.user.count(),
-    prisma.productRequest.count(),
-    prisma.offer.count(),
-    prisma.transaction.count(),
-    prisma.transaction.count({ where: { status: "PENDING" } }),
-    prisma.user.count({ where: { role: UserRole.USER, isBlocked: false } }),
-    prisma.user.count({
-      where: {
-        role: UserRole.USER,
-        isBlocked: false,
-        submittedOffers: { some: { deletedAt: null } },
-      },
-    }),
-    prisma.productRequest.count({ where: { status: { in: openRequestStatuses } } }),
-    prisma.productRequest.count({ where: { status: { in: dealInProgressStatuses } } }),
-    prisma.productRequest.groupBy({
-      by: ["status"],
-      _count: true,
-    }),
-    prisma.productRequest.findMany({
-      where: { createdAt: { gte: fromDate } },
-      select: { createdAt: true },
-    }),
-    prisma.offer.findMany({
-      where: { createdAt: { gte: fromDate } },
-      select: { createdAt: true },
-    }),
-    prisma.productRequest.count({
-      where: { offers: { some: { deletedAt: null } } },
-    }),
-    prisma.shipment.count(),
-    prisma.shipment.count({ where: { deliveredAt: { not: null } } }),
-    prisma.productRequest.groupBy({
-      by: ["countryToBuyFrom"],
-      _count: true,
-      orderBy: { _count: { countryToBuyFrom: "desc" } },
-      take: 8,
-    }),
-    prisma.user.findMany({
-      where: { role: UserRole.USER },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        agentValidationStatus: true,
-        isBlocked: true,
-      },
-    }),
-  ]);
+  // Keep dashboard queries mostly sequential to avoid pool timeouts when using pgbouncer with connection_limit=1.
+  const totalUsers = await prisma.user.count();
+  const totalRequests = await prisma.productRequest.count();
+  const totalOffers = await prisma.offer.count();
+  const totalTransactions = await prisma.transaction.count();
+  const pendingTransactions = await prisma.transaction.count({ where: { status: "PENDING" } });
+  const activeUsers = await prisma.user.count({ where: { role: UserRole.USER, isBlocked: false } });
+  const activeProviders = await prisma.user.count({
+    where: {
+      role: UserRole.USER,
+      isBlocked: false,
+      submittedOffers: { some: { deletedAt: null } },
+    },
+  });
+  const openRequests = await prisma.productRequest.count({ where: { status: { in: openRequestStatuses } } });
+  const dealsInProgress = await prisma.productRequest.count({ where: { status: { in: dealInProgressStatuses } } });
+  const requestsByStatus = await prisma.productRequest.groupBy({
+    by: ["status"],
+    _count: true,
+  });
+  const recentRequests = await prisma.productRequest.findMany({
+    where: { createdAt: { gte: fromDate } },
+    select: { createdAt: true },
+  });
+  const recentOffers = await prisma.offer.findMany({
+    where: { createdAt: { gte: fromDate } },
+    select: { createdAt: true },
+  });
+  const requestsWithOffers = await prisma.productRequest.count({
+    where: { offers: { some: { deletedAt: null } } },
+  });
+  const totalShipments = await prisma.shipment.count();
+  const deliveredShipments = await prisma.shipment.count({ where: { deliveredAt: { not: null } } });
+  const volumeByCountry = await prisma.productRequest.groupBy({
+    by: ["countryToBuyFrom"],
+    _count: true,
+    orderBy: { _count: { countryToBuyFrom: "desc" } },
+    take: 8,
+  });
+  const agents = await prisma.user.findMany({
+    where: { role: UserRole.USER },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      agentValidationStatus: true,
+      isBlocked: true,
+    },
+  });
 
   const clients = await prisma.user.count({
     where: { role: UserRole.USER },
@@ -587,58 +568,55 @@ export async function getAdminDashboardStats() {
   const conversionRate = totalRequests > 0 ? (requestsWithOffers / totalRequests) * 100 : 0;
   const deliverySuccessRate = totalShipments > 0 ? (deliveredShipments / totalShipments) * 100 : 0;
 
-  const reliableAgents = await Promise.all(
-    agents.map(async (agent) => {
-      const [totalAgentOffers, deliveredCount, disputesOnAgent] = await Promise.all([
-        prisma.offer.count({
-          where: {
+  const reliableAgents = [];
+  for (const agent of agents) {
+    const totalAgentOffers = await prisma.offer.count({
+      where: {
+        providerId: agent.id,
+        deletedAt: null,
+      },
+    });
+    const deliveredCount = await prisma.shipment.count({
+      where: {
+        providerId: agent.id,
+        deliveredAt: { not: null },
+      },
+    });
+    const disputesOnAgent = await prisma.dispute.count({
+      where: {
+        request: {
+          acceptedOffer: {
             providerId: agent.id,
-            deletedAt: null,
           },
-        }),
-        prisma.shipment.count({
-          where: {
-            providerId: agent.id,
-            deliveredAt: { not: null },
-          },
-        }),
-        prisma.dispute.count({
-          where: {
-            request: {
-              acceptedOffer: {
-                providerId: agent.id,
-              },
-            },
-          },
-        }),
-      ]);
+        },
+      },
+    });
 
-      const successRate = totalAgentOffers > 0 ? deliveredCount / totalAgentOffers : 0;
-      const score = Math.max(
-        0,
-        Math.min(
-          100,
-          Math.round(
-            successRate * 100 -
-              disputesOnAgent * 15 +
-              (agent.agentValidationStatus === "VALIDATED" ? 10 : 0) -
-              (agent.isBlocked ? 25 : 0)
-          )
+    const successRate = totalAgentOffers > 0 ? deliveredCount / totalAgentOffers : 0;
+    const score = Math.max(
+      0,
+      Math.min(
+        100,
+        Math.round(
+          successRate * 100 -
+            disputesOnAgent * 15 +
+            (agent.agentValidationStatus === "VALIDATED" ? 10 : 0) -
+            (agent.isBlocked ? 25 : 0)
         )
-      );
+      )
+    );
 
-      return {
-        id: agent.id,
-        name: agent.name,
-        email: agent.email,
-        totalOffers: totalAgentOffers,
-        deliveredCount,
-        disputesOnAgent,
-        successRate: Number((successRate * 100).toFixed(1)),
-        confidenceScore: score,
-      };
-    })
-  );
+    reliableAgents.push({
+      id: agent.id,
+      name: agent.name,
+      email: agent.email,
+      totalOffers: totalAgentOffers,
+      deliveredCount,
+      disputesOnAgent,
+      successRate: Number((successRate * 100).toFixed(1)),
+      confidenceScore: score,
+    });
+  }
 
   const topReliableAgents = reliableAgents
     .sort((a, b) => b.confidenceScore - a.confidenceScore)
@@ -1014,6 +992,37 @@ export async function closeRequest(requestId: string) {
   return updated;
 }
 
+export async function reopenRequest(requestId: string) {
+  await requireRole([UserRole.ADMIN]);
+
+  const request = await prisma.productRequest.findUnique({
+    where: { id: requestId },
+    select: { id: true, status: true, deletedAt: true },
+  });
+
+  if (!request) throw new Error("Request not found");
+  if (request.deletedAt) throw new Error("Cannot reopen a deleted request");
+  if (request.status !== "REQUEST_CLOSED") throw new Error("Only closed requests can be reopened");
+
+  const pendingOffers = await prisma.offer.count({
+    where: {
+      requestId,
+      status: "PENDING",
+      deletedAt: null,
+    },
+  });
+
+  const updated = await prisma.productRequest.update({
+    where: { id: requestId },
+    data: {
+      status: pendingOffers > 0 ? "OFFERS_RECEIVED" : "REQUEST_CREATED",
+    },
+  });
+
+  revalidatePath("/admin/dashboard");
+  return updated;
+}
+
 // ============================================
 // OFFER MANAGEMENT
 // ============================================
@@ -1046,7 +1055,7 @@ export async function deleteOffer(offerId: string, reason: string) {
 
   if (!offer) throw new Error("Offer not found");
 
-  const updated = await prisma.offer.update({
+  await prisma.offer.update({
     where: { id: offerId },
     data: {
       deletedAt: new Date(),
@@ -1055,7 +1064,6 @@ export async function deleteOffer(offerId: string, reason: string) {
   });
 
   revalidatePath("/admin/dashboard");
-  return updated;
 }
 
 export async function suspendOfferAgent(agentId: string, reason: string) {
@@ -1067,7 +1075,7 @@ export async function suspendOfferAgent(agentId: string, reason: string) {
 
   if (!agent) throw new Error("Agent not found");
 
-  const updated = await prisma.user.update({
+  await prisma.user.updateMany({
     where: { id: agentId },
     data: {
       isBlocked: true,
@@ -1077,7 +1085,7 @@ export async function suspendOfferAgent(agentId: string, reason: string) {
   });
 
   revalidatePath("/admin/dashboard");
-  return updated;
+  return agent;
 }
 
 export async function reportOfferAsAbuse(offerId: string, reason: string) {

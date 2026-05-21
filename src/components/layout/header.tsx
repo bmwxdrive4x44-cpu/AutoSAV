@@ -2,9 +2,10 @@
 import { getCurrentUser } from "@/lib/auth";
 import { withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/app/actions/auth";
-import { Package, LogOut, User } from "lucide-react";
+import { LogOut, Package, User } from "lucide-react";
 
 const HEADER_COPY: Record<
   Lang,
@@ -59,37 +60,36 @@ export async function Header({ lang = "fr" }: { lang?: Lang }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 font-bold text-xl tracking-tight text-slate-900 hover:text-primary-600 transition-colors">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-600 to-blue-600 flex items-center justify-center">
+    <header className="sticky top-0 z-50 w-full border-b ui-border-color bg-surface/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
+        <Link href="/" className="flex items-center gap-2.5 text-slate-900 transition-colors hover:text-primary-600">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-primary-600 to-primary-700">
             <Package className="w-5 h-5 text-white" />
           </div>
-          <span>DzMarket</span>
+          <span className="text-lg font-semibold tracking-tight">AutoSAV</span>
+          <Badge variant="secondary" className="hidden md:inline-flex">Marketplace</Badge>
         </Link>
 
-        <nav className="flex items-center gap-3 sm:gap-5">
+        <nav className="hidden items-center gap-5 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary-700 transition-colors"
+              className="text-sm font-medium text-slate-600 transition-colors hover:text-primary-700"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        {/* Navigation */}
         <nav className="flex items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-1 rounded-md border border-slate-300 bg-slate-100 p-1">
+          <div className="hidden items-center gap-1 rounded-md border ui-border-color bg-slate-50 p-1 sm:flex">
             {(["fr", "en", "ar"] as const).map((code) => (
               <Link
                 key={code}
                 href={withLang("/", code)}
                 className={`rounded px-2 py-1 text-xs font-semibold transition-colors ${
-                  lang === code ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-200"
+                  lang === code ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-100"
                 }`}
               >
                 {code.toUpperCase()}
@@ -99,17 +99,13 @@ export async function Header({ lang = "fr" }: { lang?: Lang }) {
 
           {user ? (
             <>
-              {/* User Info - Hidden on mobile */}
-              <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200">
-                <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+              <div className="hidden items-center gap-2 rounded-md border ui-border-color bg-slate-50 px-3 py-2 sm:flex">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-50">
                   <User className="w-4 h-4 text-primary-700" />
                 </div>
-                <span className="text-sm font-medium text-slate-900 truncate">
-                  {user.name}
-                </span>
+                <span className="max-w-[140px] truncate text-sm font-medium text-slate-900">{user.name}</span>
               </div>
 
-              {/* Dashboard Link */}
               <Link
                 href={withLang(
                   user.role === "ADMIN"
@@ -117,14 +113,13 @@ export async function Header({ lang = "fr" }: { lang?: Lang }) {
                     : "/dashboard"
                 , lang)}
               >
-                <Button variant="outline" size="sm" className="border-slate-300 hover:bg-slate-50">
+                <Button variant="outline" size="sm">
                   {t.dashboard}
                 </Button>
               </Link>
 
-              {/* Logout */}
               <form action={logout}>
-                <Button variant="ghost" size="sm" className="hover:bg-slate-100 p-2">
+                <Button variant="ghost" size="sm" className="p-2">
                   <LogOut className="w-4 h-4 text-slate-600" />
                 </Button>
               </form>
@@ -132,12 +127,12 @@ export async function Header({ lang = "fr" }: { lang?: Lang }) {
           ) : (
             <>
               <Link href={withLang("/login", lang)}>
-                <Button variant="ghost" size="sm" className="hidden sm:inline-flex hover:bg-slate-100">
+                <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
                   {t.signIn}
                 </Button>
               </Link>
               <Link href={withLang("/register", lang)}>
-                <Button size="sm" className="bg-primary-600 hover:bg-primary-700 text-white">
+                <Button size="sm">
                   {t.getStarted}
                 </Button>
               </Link>

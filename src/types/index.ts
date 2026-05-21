@@ -53,3 +53,59 @@ export type OfferWithRequest = {
   };
 };
 
+export type MatchUrgency = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
+export type MatchLocation = {
+  city?: string;
+  region?: string;
+  country?: string;
+  lat?: number;
+  lng?: number;
+};
+
+export type LogisticsRequestInput = {
+  id: string;
+  from: MatchLocation;
+  to: MatchLocation;
+  weightKg: number;
+  volumeM3: number;
+  budget: number;
+  desiredDate: Date | string;
+  urgency: MatchUrgency;
+  dateToleranceDays?: number;
+};
+
+export type CarrierOfferInput = {
+  carrierId: string;
+  routeFrom: MatchLocation;
+  routeTo: MatchLocation;
+  departureDate: Date | string;
+  arrivalDate: Date | string;
+  capacityKg: number;
+  capacityM3: number;
+  price: number;
+  restrictions?: string[];
+  reliabilityScore?: number;
+};
+
+export type MatchStatus = "RECOMMANDE" | "ACCEPTABLE" | "FAIBLE_MATCH";
+
+export type MatchResultItem = {
+  carrierId: string;
+  totalScore: number;
+  status: MatchStatus;
+  explanation: string;
+  scoreBreakdown: {
+    geographic: number;
+    date: number;
+    capacity: number;
+    price: number;
+  };
+};
+
+export type LogisticsMatchOutput = {
+  requestId: string;
+  matches: MatchResultItem[];
+  message?: string;
+};
+

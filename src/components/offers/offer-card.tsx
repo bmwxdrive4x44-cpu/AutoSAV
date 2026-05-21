@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
 import { formatPrice } from "@/lib/utils";
 import { Clock, User, MessageSquare, MapPin, ShieldCheck, Star, TrendingUp, AlertTriangle } from "lucide-react";
-import { acceptOffer } from "@/app/actions/offers";
+import { acceptOffer, rejectOffer } from "@/app/actions/offers";
 import { useTransition } from "react";
 
 interface OfferCardProps {
@@ -22,7 +22,13 @@ interface OfferCardProps {
       emailVerifiedAt?: string | Date | null;
       phoneVerifiedAt?: string | Date | null;
       agentValidationStatus?: string;
+      country?: string | null;
+      city?: string | null;
     };
+    routeFromCountry?: string | null;
+    routeFromCity?: string | null;
+    routeToCountry?: string | null;
+    routeToCity?: string | null;
     agentLocation?: string;
     agentStats?: {
       totalOffers: number;
@@ -32,11 +38,18 @@ interface OfferCardProps {
   };
   requestId: string;
   canAccept: boolean;
+  requestCountry?: string | null;
 }
 
-export function OfferCard({ offer, requestId, canAccept }: OfferCardProps) {
+export function OfferCard({ offer, requestId, canAccept, requestCountry }: OfferCardProps) {
   const [isPending, startTransition] = useTransition();
-  const location = offer.agentLocation || "Abroad";
+  const location =
+    offer.routeFromCountry ||
+    offer.routeToCountry ||
+    offer.agentLocation ||
+    offer.provider.country ||
+    requestCountry ||
+    "Non renseignee";
   const trustScore = offer.provider.trustScore ?? 0;
   const deliveredShipments = offer.agentStats?.deliveredShipments ?? 0;
   const disputesOnAgent = offer.agentStats?.disputesOnAgent ?? 0;
@@ -110,17 +123,31 @@ export function OfferCard({ offer, requestId, canAccept }: OfferCardProps) {
         </div>
         <p className="text-xs text-slate-500">{totalOffers} offre(s) publiées par cet agent.</p>
         {canAccept && offer.status === "PENDING" && (
-          <Button
-            className="w-full"
-            onClick={() => {
-              startTransition(() => {
-                acceptOffer(offer.id, requestId);
-              });
-            }}
-            disabled={isPending}
-          >
-            {isPending ? "Traitement..." : "Accepter cette offre"}
-          </Button>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Button
+              className="w-full"
+              onClick={() => {
+                startTransition(() => {
+                  acceptOffer(offer.id, requestId);
+                });
+              }}
+              disabled={isPending}
+            >
+              {isPending ? "Traitement..." : "Accepter cette offre"}
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                startTransition(() => {
+                  rejectOffer(offer.id, requestId);
+                });
+              }}
+              disabled={isPending}
+            >
+              {isPending ? "Traitement..." : "Refuser cette offre"}
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>

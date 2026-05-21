@@ -12,6 +12,15 @@ const createOfferSchema = z.object({
   price: z.coerce.number().positive(),
   estimatedDeliveryDays: z.coerce.number().int().positive(),
   message: z.string().min(5),
+  routeFromCountry: z.string().trim().optional(),
+  routeFromCity: z.string().trim().optional(),
+  routeToCountry: z.string().trim().optional(),
+  routeToCity: z.string().trim().optional(),
+  departureDate: z.coerce.date().optional(),
+  arrivalDate: z.coerce.date().optional(),
+  capacityKg: z.coerce.number().positive().optional(),
+  capacityM3: z.coerce.number().positive().optional(),
+  restrictions: z.string().trim().optional(),
 });
 
 export async function createOffer(formData: FormData) {
@@ -22,6 +31,15 @@ export async function createOffer(formData: FormData) {
     price: formData.get("price"),
     estimatedDeliveryDays: formData.get("estimatedDeliveryDays"),
     message: formData.get("message"),
+    routeFromCountry: formData.get("routeFromCountry") || undefined,
+    routeFromCity: formData.get("routeFromCity") || undefined,
+    routeToCountry: formData.get("routeToCountry") || undefined,
+    routeToCity: formData.get("routeToCity") || undefined,
+    departureDate: formData.get("departureDate") || undefined,
+    arrivalDate: formData.get("arrivalDate") || undefined,
+    capacityKg: formData.get("capacityKg") || undefined,
+    capacityM3: formData.get("capacityM3") || undefined,
+    restrictions: formData.get("restrictions") || undefined,
   });
 
   const request = await prisma.productRequest.findUnique({
@@ -42,6 +60,15 @@ export async function createOffer(formData: FormData) {
         price: data.price,
         estimatedDeliveryDays: data.estimatedDeliveryDays,
         message: data.message,
+        routeFromCountry: data.routeFromCountry || null,
+        routeFromCity: data.routeFromCity || null,
+        routeToCountry: data.routeToCountry || null,
+        routeToCity: data.routeToCity || null,
+        departureDate: data.departureDate ?? null,
+        arrivalDate: data.arrivalDate ?? null,
+        capacityKg: data.capacityKg ?? null,
+        capacityM3: data.capacityM3 ?? null,
+        restrictions: data.restrictions || null,
         providerId: user.id,
         requestId: data.requestId,
       },
@@ -133,6 +160,56 @@ export async function acceptOffer(offerId: string, requestId: string) {
   });
 }
 
+export async function rejectOffer(offerId: string, requestId: string) {
+  const user = await requireRole([UserRole.USER]);
+
+  const request = await prisma.productRequest.findUnique({
+    where: { id: requestId },
+    include: {
+      offers: true,
+    },
+  });
+
+  if (!request) throw new Error("Request not found");
+  if (request.requesterId !== user.id) throw new Error("Unauthorized");
+  if (request.status !== "OFFERS_RECEIVED" && request.status !== "REQUEST_CREATED") {
+    throw new Error("Invalid status");
+  }
+
+  const targetOffer = request.offers.find((offer) => offer.id === offerId);
+  if (!targetOffer) throw new Error("Offer not found");
+  if (targetOffer.status !== "PENDING") {
+    throw new Error("Only pending offers can be rejected");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.offer.update({
+      where: { id: offerId },
+      data: { status: "REJECTED" },
+    });
+
+    const remainingPendingOffers = await tx.offer.count({
+      where: {
+        requestId,
+        status: "PENDING",
+        deletedAt: null,
+      },
+    });
+
+    await tx.productRequest.update({
+      where: { id: requestId },
+      data: {
+        status: remainingPendingOffers > 0 ? "OFFERS_RECEIVED" : "REQUEST_CREATED",
+      },
+    });
+  });
+
+  revalidatePath(`/request/${requestId}`);
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/offers-received");
+  revalidatePath("/dashboard/requests-market");
+}
+
 export async function getAgentBuyerOffers() {
   const user = await requireRole([UserRole.USER]);
 
@@ -141,7 +218,7 @@ export async function getAgentBuyerOffers() {
     include: {
       request: {
         select: {
-          id: true,
+          id: true, description: true, createdAt: true,
           title: true,
           status: true,
           requester: { select: { name: true } },

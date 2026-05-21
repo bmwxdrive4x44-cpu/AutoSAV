@@ -52,7 +52,7 @@ function isPortAvailable(port) {
 }
 
 async function resolveDevPort() {
-  const basePort = Number(process.env.DEV_PORT || process.env.PORT || 3001);
+  const basePort = Number(process.env.DEV_PORT || process.env.PORT || 3000);
 
   if (!Number.isFinite(basePort) || basePort <= 0) {
     throw new Error("Invalid DEV_PORT/PORT value");

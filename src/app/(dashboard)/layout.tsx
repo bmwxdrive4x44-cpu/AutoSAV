@@ -31,11 +31,12 @@ export default async function DashboardLayout({
 
   const userLinks = [
     { href: "/dashboard", label: "Vue d'ensemble", icon: Home },
+    { href: "/dashboard/profile", label: "Mon profil", icon: Shield },
     { href: "/dashboard/requests", label: "Mes demandes", icon: ClipboardList },
     { href: "/dashboard/create-request", label: "Creer une demande", icon: Plus },
     { href: "/dashboard/requests-market", label: "Marketplace des demandes", icon: ShoppingBag },
     { href: "/dashboard/offers-received", label: "Offres recues", icon: ClipboardList },
-    { href: "/dashboard/offers-submitted", label: "Offres soumises", icon: Send },
+    { href: "/dashboard/offers-submitted", label: "Offres envoyees", icon: Send },
     { href: "/dashboard/deliveries", label: "Livraisons", icon: Truck },
     { href: "/dashboard/disputes", label: "Litiges", icon: Scale },
     { href: "/dashboard/transactions", label: "Transactions", icon: Wallet },
@@ -49,13 +50,12 @@ export default async function DashboardLayout({
   const roleLabel = isAdmin ? "Admin" : "Utilisateur";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-bg">
       <Header />
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Sidebar */}
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+        <div className="flex flex-col gap-6 md:flex-row">
           <aside className="w-full md:w-64 shrink-0">
-            <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-1 sticky top-20">
+            <div className="surface-card sticky top-20 space-y-1 p-4">
               <div className="px-3 py-2 mb-2">
                 <p className="text-xs font-medium text-slate-400 uppercase">
                   {roleLabel}
@@ -66,7 +66,7 @@ export default async function DashboardLayout({
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary-700 transition-colors"
+                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary-700"
                 >
                   <link.icon className="w-4 h-4" />
                   {link.label}
@@ -74,7 +74,7 @@ export default async function DashboardLayout({
               ))}
               <Link
                 href="/"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-primary-700 transition-colors mt-4 pt-4 border-t"
+                className="mt-4 flex items-center gap-3 border-t ui-border-color px-3 py-2 pt-4 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary-700"
               >
                 <Home className="w-4 h-4" />
                 Accueil
@@ -82,7 +82,6 @@ export default async function DashboardLayout({
             </div>
           </aside>
 
-          {/* Main */}
           <main className="flex-1 min-w-0">{children}</main>
         </div>
       </div>

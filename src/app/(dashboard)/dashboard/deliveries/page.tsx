@@ -12,7 +12,7 @@ export default async function DeliveriesPage() {
       <h1 className="text-2xl font-semibold">Livraisons actives</h1>
 
       {deliveries.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-10 text-center text-slate-500">Aucune livraison active.</div>
+        <div className="surface-card p-10 text-center text-slate-500">Aucune livraison active.</div>
       ) : (
         <div className="space-y-4">
           {deliveries.map((delivery) => (

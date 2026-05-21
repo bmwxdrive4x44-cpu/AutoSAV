@@ -34,6 +34,7 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
   }
 
   const deletedOffers = offers.filter((o) => o.deletedAt);
+  const activeOffers = offers.filter((o) => !o.deletedAt);
   const suspiciousOffers = offers.filter((o) => o.isSuspicious && !o.deletedAt);
   const abusiveOffers = offers.filter((o) => o.isReportedAsAbuse && !o.deletedAt);
 
@@ -71,6 +72,97 @@ export function OffersManagement({ offers, onReload }: OffersManagementProps) {
           <p className="text-sm text-slate-700">Offres supprimées</p>
           <p className="text-2xl font-bold text-slate-900">{deletedOffers.length}</p>
         </div>
+      </div>
+
+      {/* All active offers */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 bg-blue-50 border-b border-blue-200">
+          <h3 className="text-base font-semibold text-blue-900">Offres actives (toutes) ({activeOffers.length})</h3>
+        </div>
+        {activeOffers.length === 0 ? (
+          <div className="p-6 text-sm text-slate-500">Aucune offre active.</div>
+        ) : (
+          <table className="w-full">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Demande</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Agent</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Prix</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Statut</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {activeOffers.map((offer) => (
+                <tr key={offer.id} className="hover:bg-slate-50">
+                  <td className="px-6 py-3 text-sm text-slate-800 font-medium">{offer.request?.title}</td>
+                  <td className="px-6 py-3 text-sm text-slate-600">{offer.provider?.name}</td>
+                  <td className="px-6 py-3 text-sm text-slate-600">{Math.floor(offer.price)} DZD</td>
+                  <td className="px-6 py-3 text-sm text-slate-600">{offer.status || "-"}</td>
+                  <td className="px-6 py-3 text-sm">
+                    <div className="flex gap-2">
+                      {!offer.isSuspicious && (
+                        <button
+                          onClick={() => {
+                            if (!window.confirm("Confirmer le marquage de cette offre comme suspecte ?")) {
+                              return;
+                            }
+                            const reason = askReason(
+                              "Raison du marquage suspect :",
+                              "Marquage admin"
+                            );
+                            if (!reason) return;
+                            return handleAction(offer.id, () => markOfferAsSuspicious(offer.id, reason));
+                          }}
+                          disabled={!!actionPending[offer.id]}
+                          className="px-2 py-1 rounded text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-60"
+                        >
+                          Marquer suspect
+                        </button>
+                      )}
+                      {!offer.isReportedAsAbuse && (
+                        <button
+                          onClick={() => {
+                            if (!window.confirm("Confirmer le signalement de cette offre comme abusive ?")) {
+                              return;
+                            }
+                            const reason = askReason(
+                              "Raison du signalement :",
+                              "Signalement admin"
+                            );
+                            if (!reason) return;
+                            return handleAction(offer.id, () => reportOfferAsAbuse(offer.id, reason));
+                          }}
+                          disabled={!!actionPending[offer.id]}
+                          className="px-2 py-1 rounded text-xs font-semibold bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
+                        >
+                          Signaler abus
+                        </button>
+                      )}
+                      <button
+                        onClick={() => {
+                          if (!window.confirm("Confirmer la suppression de cette offre ?")) {
+                            return;
+                          }
+                          const reason = askReason(
+                            "Raison de suppression :",
+                            "Offre supprimée par modération admin"
+                          );
+                          if (!reason) return;
+                          return handleAction(offer.id, () => deleteOffer(offer.id, reason));
+                        }}
+                        disabled={!!actionPending[offer.id]}
+                        className="px-2 py-1 rounded text-xs font-semibold bg-slate-600 text-white hover:bg-slate-700 disabled:opacity-60"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Archived deleted offers */}

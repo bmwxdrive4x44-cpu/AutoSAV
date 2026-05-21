@@ -8,5 +8,5 @@ CREATE TABLE "NotificationLog" (
     "status" TEXT NOT NULL,
     "error" TEXT,
     "requestId" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

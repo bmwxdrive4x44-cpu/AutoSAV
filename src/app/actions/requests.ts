@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -12,6 +12,13 @@ const createRequestSchema = z.object({
   categoryId: z.string().min(1),
   budget: z.coerce.number().positive(),
   countryToBuyFrom: z.string().min(1),
+  pickupCity: z.string().trim().optional(),
+  destinationCountry: z.string().trim().optional(),
+  destinationCity: z.string().trim().optional(),
+  packageWeightKg: z.coerce.number().positive().optional(),
+  packageVolumeM3: z.coerce.number().positive().optional(),
+  desiredShippingDate: z.coerce.date().optional(),
+  urgency: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
   images: z.string().optional(),
 });
 
@@ -24,6 +31,13 @@ export async function createRequest(formData: FormData) {
     categoryId: formData.get("categoryId"),
     budget: formData.get("budget"),
     countryToBuyFrom: formData.get("countryToBuyFrom"),
+    pickupCity: formData.get("pickupCity") || undefined,
+    destinationCountry: formData.get("destinationCountry") || undefined,
+    destinationCity: formData.get("destinationCity") || undefined,
+    packageWeightKg: formData.get("packageWeightKg") || undefined,
+    packageVolumeM3: formData.get("packageVolumeM3") || undefined,
+    desiredShippingDate: formData.get("desiredShippingDate") || undefined,
+    urgency: formData.get("urgency") || undefined,
     images: formData.get("images"),
   });
 
@@ -66,6 +80,13 @@ export async function createRequest(formData: FormData) {
       categoryId: data.categoryId,
       budget: data.budget,
       countryToBuyFrom: data.countryToBuyFrom,
+      pickupCity: data.pickupCity || null,
+      destinationCountry: data.destinationCountry || null,
+      destinationCity: data.destinationCity || null,
+      packageWeightKg: data.packageWeightKg ?? null,
+      packageVolumeM3: data.packageVolumeM3 ?? null,
+      desiredShippingDate: data.desiredShippingDate ?? null,
+      urgency: data.urgency || "MEDIUM",
       images: imagesCsv,
       requesterId: user.id,
     },
@@ -84,6 +105,7 @@ export async function getClientRequests() {
     where: { requesterId: user.id, deletedAt: null },
     include: {
       category: true,
+      requester: { select: { id: true, name: true } },
       _count: { select: { offers: true } },
       offers: {
         include: { provider: { select: { name: true } } },
@@ -109,6 +131,35 @@ export async function getPublicRequests() {
       _count: { select: { offers: true } },
     },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getPublicRequestsForMatchingPreview() {
+  return prisma.productRequest.findMany({
+    where: {
+      status: { in: ["REQUEST_CREATED", "OFFERS_RECEIVED"] },
+      deletedAt: null,
+    },
+    include: {
+      requester: { select: { id: true, name: true } },
+      category: true,
+      offers: {
+        where: { deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              trustScore: true,
+            },
+          },
+        },
+      },
+      _count: { select: { offers: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 18,
   });
 }
 

@@ -1,5 +1,5 @@
 ﻿export type Lang = "fr" | "en" | "ar";
-export type AuthErrorCode = "invalid_credentials" | "invalid_form" | "email_exists";
+export type AuthErrorCode = "invalid_credentials" | "invalid_form" | "email_exists" | "db_unavailable";
 
 const CATEGORY_LABELS: Record<string, Record<Lang, string>> = {
   "auto-parts": {
@@ -49,16 +49,19 @@ const AUTH_ERROR_MESSAGES: Record<Lang, Record<AuthErrorCode, string>> = {
     invalid_credentials: "Email ou mot de passe invalide.",
     invalid_form: "Veuillez verifier les informations du formulaire.",
     email_exists: "Cet email est deja utilise.",
+    db_unavailable: "Service temporairement indisponible. Veuillez reessayer dans quelques instants.",
   },
   en: {
     invalid_credentials: "Invalid email or password.",
     invalid_form: "Please check the submitted form fields.",
     email_exists: "This email is already registered.",
+    db_unavailable: "Service is temporarily unavailable. Please try again shortly.",
   },
   ar: {
     invalid_credentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
     invalid_form: "يرجى التحقق من بيانات النموذج.",
     email_exists: "هذا البريد الإلكتروني مسجل بالفعل.",
+    db_unavailable: "الخدمة غير متاحة مؤقتًا. يرجى المحاولة بعد قليل.",
   },
 };
 
@@ -88,7 +91,12 @@ export function textDir(lang: Lang): "ltr" | "rtl" {
 export function getAuthErrorMessage(lang: Lang, error?: string): string | null {
   if (!error) return null;
 
-  if (error === "invalid_credentials" || error === "invalid_form" || error === "email_exists") {
+  if (
+    error === "invalid_credentials" ||
+    error === "invalid_form" ||
+    error === "email_exists" ||
+    error === "db_unavailable"
+  ) {
     return AUTH_ERROR_MESSAGES[lang][error];
   }
 
