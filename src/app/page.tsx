@@ -1,5 +1,5 @@
-﻿import Link from "next/link";
-import { ArrowRight, CheckCircle2, Globe, Handshake, MessagesSquare, Package, Shield, Zap } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Globe, Handshake, MessagesSquare, Package, Shield, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { getCategories } from "@/app/actions/categories";
 import { getPublicRequests } from "@/app/actions/requests";
 import { CategoryCard } from "@/components/categories";
@@ -45,48 +45,48 @@ const COPY: Record<
   }
 > = {
   fr: {
-    badge: "Sourcing simplifie",
+    badge: "Sourcing simplifié",
     heroTitleStart: "Trouvez des offres fiables en",
     heroTitleEmphasis: "quelques secondes",
-    heroSubtitle: "Connectez-vous a des fournisseurs verifies et sourcez vos produits en toute confiance.",
+    heroSubtitle: "Connectez-vous à des fournisseurs vérifiés et sourcez vos produits en toute confiance.",
     ctaPrimary: "Publier une demande",
     ctaSecondary: "Parcourir les offres",
-    trustChips: ["Reseau verifie", "Workflow securise", "Matching rapide"],
+    trustChips: ["Réseau vérifié", "Workflow sécurisé", "Matching rapide"],
     trustStats: ["1,200+", "$2.5M+"],
-    trustStatLabels: ["Utilisateurs verifies", "Commandes facilitees"],
-    showcaseLabels: ["Demandes actives", "Utilisateurs verifies", "Reponse moyenne"],
-    categoriesTitle: "Parcourir par categorie",
-    categoriesSubtitle: "Trouvez exactement ce que vous cherchez en explorant nos categories principales.",
-    featuresTitle: ["Vendeurs verifies", "Reponses rapides", "Reseau mondial"],
+    trustStatLabels: ["Utilisateurs vérifiés", "Commandes facilitées"],
+    showcaseLabels: ["Demandes actives", "Utilisateurs vérifiés", "Réponse moyenne"],
+    categoriesTitle: "Parcourir par catégorie",
+    categoriesSubtitle: "Trouvez exactement ce que vous cherchez en explorant nos catégories principales.",
+    featuresTitle: ["Vendeurs vérifiés", "Réponses rapides", "Réseau mondial"],
     featuresDesc: [
-      "Les profils actifs sont controles pour garantir la fiabilite et la qualite.",
+      "Les profils actifs sont contrôlés pour garantir la fiabilité et la qualité.",
       "Recevez des offres en quelques heures, pas en plusieurs jours.",
-      "Connectez-vous instantanement a des fournisseurs de plusieurs pays.",
+      "Connectez-vous instantanément à des fournisseurs de plusieurs pays.",
     ],
-    howItWorksTitle: "Comment ca marche",
-    howItWorksSubtitle: "Simple, transparent et rapide. Trouvez vos produits en trois etapes.",
+    howItWorksTitle: "Comment ça marche",
+    howItWorksSubtitle: "Simple, transparent et rapide. Trouvez vos produits en trois étapes.",
     steps: [
       {
         title: "Publiez votre demande",
-        description: "Expliquez clairement le produit recherche, la quantite et le budget.",
+        description: "Expliquez clairement le produit recherché, la quantité et le budget.",
       },
       {
         title: "Recevez des offres",
-        description: "Des offreurs verifies repondent avec prix, delais et conditions.",
+        description: "Des offreurs vérifiés répondent avec prix, délais et conditions.",
       },
       {
         title: "Finalisez la commande",
-        description: "Comparez, negociez et validez. Le suivi est centralise sur la plateforme.",
+        description: "Comparez, négociez et validez. Le suivi est centralisé sur la plateforme.",
       },
     ],
     contactTitle: "Contact",
-    contactSubtitle: "Notre equipe vous repond rapidement pour vous aider a publier ou suivre vos demandes.",
+    contactSubtitle: "Notre équipe vous répond rapidement pour vous aider à publier ou suivre vos demandes.",
     contactEmailLabel: "Email",
-    contactPhoneLabel: "Telephone",
+    contactPhoneLabel: "Téléphone",
     contactHoursLabel: "Horaires",
-    finalCtaTitle: "Pret a commencer ?",
+    finalCtaTitle: "Prêt à commencer ?",
     finalCtaSubtitle: "Rejoignez des utilisateurs qui trouvent plus intelligemment.",
-    finalCtaAgent: "Creer un compte",
+    finalCtaAgent: "Créer un compte",
   },
   en: {
     badge: "Sourcing made simple",
@@ -209,79 +209,132 @@ export default async function HomePage({
   const t = COPY[lang];
 
   const highlights = [
-    { label: t.showcaseLabels[0], value: `${requests.length}+` },
-    { label: t.showcaseLabels[1], value: t.trustStats[0] },
-    { label: t.showcaseLabels[2], value: "< 2h" },
+    { label: t.showcaseLabels[0], value: `${requests.length}+`, icon: Package },
+    { label: t.showcaseLabels[1], value: t.trustStats[0], icon: Shield },
+    { label: t.showcaseLabels[2], value: "< 2h", icon: Zap },
   ];
 
   const featureIcons = [Shield, Zap, Globe] as const;
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen">
       <Header lang={lang} />
       <div dir={isRtl ? "rtl" : "ltr"}>
-        <section className="relative overflow-hidden border-b border-slate-200/80 py-16 md:py-24">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_10%,rgba(47,111,237,0.15),transparent_32%),radial-gradient(circle_at_10%_20%,rgba(47,111,237,0.08),transparent_28%)]" />
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 md:px-6 lg:grid-cols-[1.25fr_1fr] lg:items-center">
-            <div className="space-y-8">
-              <Badge variant="secondary" className="w-fit text-sm">{t.badge}</Badge>
-              <div className="space-y-4">
-                <h1>
-                  {t.heroTitleStart} <span className="text-primary-700">{t.heroTitleEmphasis}</span>
-                </h1>
-                <p className="max-w-2xl text-base md:text-lg text-slate-600">{t.heroSubtitle}</p>
+        {/* Hero Section */}
+        <section className="relative overflow-hidden py-20 md:py-32">
+          {/* Background Effects */}
+          <div className="pointer-events-none absolute inset-0 -z-10">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-accent/10 rounded-full blur-[120px] opacity-60" />
+            <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] opacity-40" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+          </div>
+
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+              {/* Left Content */}
+              <div className="space-y-8">
+                <Badge className="w-fit animate-fade-up">
+                  <Sparkles className="w-3 h-3 mr-1.5" />
+                  {t.badge}
+                </Badge>
+
+                <div className="space-y-6">
+                  <h1 className="text-balance animate-fade-up" style={{ animationDelay: "100ms" }}>
+                    {t.heroTitleStart}{" "}
+                    <span className="text-accent">{t.heroTitleEmphasis}</span>
+                  </h1>
+                  <p className="max-w-xl text-lg text-muted leading-relaxed animate-fade-up" style={{ animationDelay: "200ms" }}>
+                    {t.heroSubtitle}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4 sm:flex-row animate-fade-up" style={{ animationDelay: "300ms" }}>
+                  <Link href={withLang("/dashboard/create-request", lang)}>
+                    <Button size="lg" className="w-full sm:w-auto group">
+                      {t.ctaPrimary}
+                      <ArrowRight className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${isRtl ? "mr-2 rotate-180" : "ml-2"}`} />
+                    </Button>
+                  </Link>
+                  <Link href="#requests">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                      {t.ctaSecondary}
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Trust Chips */}
+                <div className="flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: "400ms" }}>
+                  {t.trustChips.map((chip) => (
+                    <div
+                      key={chip}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-surface/40 backdrop-blur-sm text-sm text-foreground-secondary"
+                    >
+                      <CheckCircle2 className="h-4 w-4 text-success" />
+                      {chip}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href={withLang("/dashboard/create-request", lang)}>
-                  <Button size="lg" className="w-full sm:w-auto">
-                    {t.ctaPrimary}
-                    <ArrowRight className={`h-4 w-4 ${isRtl ? "mr-2" : "ml-2"}`} />
-                  </Button>
-                </Link>
-                <Link href="#requests">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto">{t.ctaSecondary}</Button>
-                </Link>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {t.trustChips.map((chip) => (
-                  <div key={chip} className="surface-card flex items-center gap-2 px-3 py-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-success-500" />
-                    {chip}
-                  </div>
-                ))}
+
+              {/* Right - Stats Card */}
+              <div className="relative animate-fade-up" style={{ animationDelay: "300ms" }}>
+                <div className="absolute -inset-4 bg-gradient-to-r from-accent/20 to-primary/20 rounded-3xl blur-2xl opacity-40" />
+                <Card className="relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">Marketplace Pulse</CardTitle>
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/15 text-success text-xs font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                        Live
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {highlights.map((item) => (
+                      <div
+                        key={item.label}
+                        className="group flex items-center justify-between rounded-xl border border-border bg-surface-elevated/50 p-4 transition-all duration-300 hover:border-accent/30 hover:bg-surface-elevated"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
+                            <item.icon className="h-5 w-5" />
+                          </div>
+                          <span className="text-sm text-muted">{item.label}</span>
+                        </div>
+                        <span className="text-xl font-bold text-foreground font-display">{item.value}</span>
+                      </div>
+                    ))}
+
+                    <div className="rounded-xl border border-accent/20 bg-accent/10 p-4 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-foreground-secondary">{t.trustStatLabels[0]}</span>
+                        <span className="font-bold text-accent">{t.trustStats[0]}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Marketplace Pulse</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {highlights.map((item) => (
-                  <div key={item.label} className="flex items-center justify-between rounded-md border ui-border-color bg-slate-50 p-3">
-                    <span className="text-sm text-slate-600">{item.label}</span>
-                    <span className="font-semibold text-slate-900">{item.value}</span>
-                  </div>
-                ))}
-                <div className="rounded-md border ui-border-color bg-primary-50 p-3 text-sm text-primary-700">
-                  {t.trustStatLabels[0]}: <span className="font-semibold">{t.trustStats[0]}</span>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </section>
 
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
+        {/* Categories Section */}
+        <section className="relative py-20 md:py-24">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-surface/30 to-transparent" />
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-8 flex items-end justify-between gap-3">
-              <div>
-                <h2>{t.categoriesTitle}</h2>
-                <p className="mt-1 text-slate-500">{t.categoriesSubtitle}</p>
-              </div>
+            <div className="mb-12 text-center">
+              <h2 className="text-balance">{t.categoriesTitle}</h2>
+              <p className="mt-3 text-muted max-w-2xl mx-auto">{t.categoriesSubtitle}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {categories.map((category) => (
-                <Link key={category.id} href={withLang(`/category/${category.slug}`, lang)}>
+              {categories.map((category, idx) => (
+                <Link
+                  key={category.id}
+                  href={withLang(`/category/${category.slug}`, lang)}
+                  className="animate-fade-up"
+                  style={{ animationDelay: `${idx * 50}ms` }}
+                >
                   <CategoryCard
                     name={getCategoryLabel(category.slug, lang, category.name)}
                     slug={category.slug}
@@ -293,46 +346,60 @@ export default async function HomePage({
           </div>
         </section>
 
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
-          <div className="mx-auto grid max-w-7xl gap-4 px-4 md:px-6 md:grid-cols-3">
-            {t.featuresTitle.map((title, idx) => {
-              const Icon = featureIcons[idx];
-              return (
-                <Card key={title}>
-                  <CardContent className="space-y-3 p-6">
-                    <span className="inline-flex rounded-md bg-primary-50 p-2 text-primary-700">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-                    <p className="text-sm text-slate-500">{t.featuresDesc[idx]}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+        {/* Features Section */}
+        <section className="py-20 md:py-24">
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <div className="grid gap-6 md:grid-cols-3">
+              {t.featuresTitle.map((title, idx) => {
+                const Icon = featureIcons[idx];
+                return (
+                  <Card
+                    key={title}
+                    className="group relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <CardContent className="relative space-y-4 p-6">
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all duration-300 group-hover:bg-accent/15 group-hover:scale-110">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+                      <p className="text-sm text-muted leading-relaxed">{t.featuresDesc[idx]}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </section>
 
-        <section id="requests" className="border-b border-slate-200/80 py-12">
+        {/* Requests Feed Section */}
+        <section id="requests" className="py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <HomeRequestFeed requests={requests} user={user} lang={lang} isRtl={isRtl} />
           </div>
         </section>
 
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
+        {/* How It Works Section */}
+        <section className="relative py-20 md:py-24">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-surface/30 to-transparent" />
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-8 text-center">
-              <h2>{t.howItWorksTitle}</h2>
-              <p className="mt-2 text-slate-500">{t.howItWorksSubtitle}</p>
+            <div className="mb-12 text-center">
+              <h2 className="text-balance">{t.howItWorksTitle}</h2>
+              <p className="mt-3 text-muted max-w-2xl mx-auto">{t.howItWorksSubtitle}</p>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3">
               {[Package, MessagesSquare, Handshake].map((Icon, idx) => (
-                <Card key={t.steps[idx].title}>
-                  <CardContent className="space-y-3 p-6 text-center">
-                    <span className="mx-auto inline-flex rounded-full bg-primary-50 p-3 text-primary-700">
-                      <Icon className="h-6 w-6" />
-                    </span>
+                <Card key={t.steps[idx].title} className="group relative overflow-hidden text-center">
+                  {/* Step Number */}
+                  <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold">
+                    {idx + 1}
+                  </div>
+                  <CardContent className="space-y-4 p-8 pt-16">
+                    <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 text-accent transition-all duration-300 group-hover:scale-110 group-hover:shadow-glow">
+                      <Icon className="h-8 w-8" />
+                    </div>
                     <h3 className="text-base font-semibold text-foreground">{t.steps[idx].title}</h3>
-                    <p className="text-sm text-slate-500">{t.steps[idx].description}</p>
+                    <p className="text-sm text-muted leading-relaxed">{t.steps[idx].description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -340,42 +407,66 @@ export default async function HomePage({
           </div>
         </section>
 
-        <section id="contact" className="py-14 md:py-18">
+        {/* Contact Section */}
+        <section id="contact" className="py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t.contactTitle}</CardTitle>
-                <p className="text-sm text-slate-500">{t.contactSubtitle}</p>
+            <Card className="relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <CardHeader className="relative">
+                <CardTitle className="text-xl">{t.contactTitle}</CardTitle>
+                <p className="text-sm text-muted mt-1">{t.contactSubtitle}</p>
               </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 md:grid-cols-3">
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactEmailLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">support@autosav.app</p>
-                  </div>
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactPhoneLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">+213 555 00 00 00</p>
-                  </div>
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactHoursLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">09:00 - 18:00</p>
-                  </div>
+              <CardContent className="relative">
+                <div className="grid gap-4 md:grid-cols-3">
+                  {[
+                    { label: t.contactEmailLabel, value: "support@autosav.app" },
+                    { label: t.contactPhoneLabel, value: "+213 555 00 00 00" },
+                    { label: t.contactHoursLabel, value: "09:00 - 18:00" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-border bg-surface-elevated/50 p-4 transition-all duration-300 hover:border-accent/30"
+                    >
+                      <p className="text-xs uppercase text-muted tracking-wide">{item.label}</p>
+                      <p className="mt-2 text-sm font-semibold text-foreground">{item.value}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <Link href={withLang("/dashboard/create-request", lang)}>
-                    <Button>{t.ctaPrimary}</Button>
+                    <Button className="w-full sm:w-auto">
+                      {t.ctaPrimary}
+                      <ArrowRight className={`h-4 w-4 ${isRtl ? "mr-2 rotate-180" : "ml-2"}`} />
+                    </Button>
                   </Link>
                   <Link href={withLang("/register", lang)}>
-                    <Button variant="outline">{t.finalCtaAgent}</Button>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                      {t.finalCtaAgent}
+                    </Button>
                   </Link>
                 </div>
               </CardContent>
             </Card>
           </div>
         </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border py-8">
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
+                  <Package className="w-4 h-4" />
+                </div>
+                <span className="font-semibold text-foreground">AutoSAV</span>
+              </div>
+              <p className="text-sm text-muted">
+                © 2024 AutoSAV. Tous droits réservés.
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
 }
-

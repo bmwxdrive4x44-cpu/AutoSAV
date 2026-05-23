@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { RequestCard } from "@/components/requests/request-card";
-import { Search, Package, Smartphone, Shirt, Home, Car } from "lucide-react";
+import { Search, Package, Smartphone, Shirt, Home, Car, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type HomeRequest = {
   id: string;
@@ -54,16 +55,16 @@ const FEED_COPY: Record<
 > = {
   fr: {
     title: "Demandes actives",
-    subtitle: "Parcourez les opportunites et proposez vos meilleures offres.",
+    subtitle: "Parcourez les opportunités et proposez vos meilleures offres.",
     searchPlaceholder: "Rechercher par produit, pays...",
-    categoriesTitle: "Categories populaires",
+    categoriesTitle: "Catégories populaires",
     categories: [
       { label: "Electronique", searchTerm: "electronic" },
       { label: "Mode", searchTerm: "fashion" },
       { label: "Maison & Jardin", searchTerm: "home" },
-      { label: "Pieces Auto", searchTerm: "auto" },
+      { label: "Pièces Auto", searchTerm: "auto" },
     ],
-    emptyTitle: "Aucune demande trouvee",
+    emptyTitle: "Aucune demande trouvée",
     emptySubtitle: "Essayez une autre recherche ou revenez plus tard.",
     requestsAvailable: "disponible",
     requestSingle: "demande",
@@ -73,8 +74,8 @@ const FEED_COPY: Record<
       budget: "Budget",
       from: "Depuis",
       active: "Actif",
-      highPriority: "Priorite haute",
-      statusCompleted: "Termine",
+      highPriority: "Priorité haute",
+      statusCompleted: "Terminé",
       statusInProgress: "En cours",
       statusOpen: "Ouvert",
     },
@@ -159,35 +160,42 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
   }, [query, requests, selectedCategory]);
 
   return (
-    <section className="py-16 md:py-24 border-t border-slate-200 bg-slate-50/70" id="requests">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900">{t.title}</h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">{t.subtitle}</p>
-        </div>
+    <section className="relative" id="requests">
+      {/* Header */}
+      <div className="mb-12 text-center space-y-4">
+        <Badge className="w-fit mx-auto">
+          <Sparkles className="w-3 h-3 mr-1.5" />
+          Live
+        </Badge>
+        <h2 className="text-balance">{t.title}</h2>
+        <p className="text-muted max-w-2xl mx-auto">{t.subtitle}</p>
+      </div>
 
-        {/* Search Bar */}
-        <div className="mb-12 max-w-2xl mx-auto">
+      {/* Search Bar */}
+      <div className="mb-10 max-w-2xl mx-auto">
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-primary/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative">
-            <Search className={`absolute top-1/2 w-5 h-5 -translate-y-1/2 text-slate-400 ${isRtl ? "right-4" : "left-4"}`} />
+            <Search className={`absolute top-1/2 w-5 h-5 -translate-y-1/2 text-muted ${isRtl ? "right-5" : "left-5"}`} />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t.searchPlaceholder}
-              className={`h-14 rounded-xl border-slate-300 bg-slate-100 text-base shadow-sm focus:ring-2 focus:ring-primary-500 ${isRtl ? "pr-12 pl-5 text-right" : "pl-12 pr-5"}`}
+              className={`h-14 rounded-xl border-border bg-surface/80 backdrop-blur-sm text-base placeholder:text-muted focus:border-accent/50 focus:ring-2 focus:ring-accent/20 transition-all ${isRtl ? "pr-14 pl-5 text-right" : "pl-14 pr-5"}`}
             />
           </div>
         </div>
+      </div>
 
-        {/* Popular Categories */}
-        <div className="mb-12">
-          <p className="text-sm font-semibold text-slate-600 mb-4">{t.categoriesTitle}</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {t.categories.map((category, index) => {
-              const CategoryIcon = CATEGORY_ICONS[index];
+      {/* Popular Categories */}
+      <div className="mb-10">
+        <p className="text-sm font-medium text-muted mb-4">{t.categoriesTitle}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {t.categories.map((category, index) => {
+            const CategoryIcon = CATEGORY_ICONS[index];
+            const isActive = selectedCategory === category.searchTerm;
 
-              return (
+            return (
               <button
                 key={category.label}
                 onClick={() => {
@@ -200,38 +208,49 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
                   setSelectedCategory(category.searchTerm);
                   setQuery(category.searchTerm);
                 }}
-                className={`p-4 rounded-lg border-2 transition-all text-center ${
-                  selectedCategory === category.searchTerm
-                    ? "border-primary-600 bg-primary-50"
-                    : "border-slate-300 bg-slate-100 hover:border-slate-400"
+                className={`group p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 text-center ${
+                  isActive
+                    ? "border-accent/50 bg-accent/10 shadow-[0_0_20px_rgba(255,107,74,0.15)]"
+                    : "border-border bg-surface/40 hover:border-accent/30 hover:bg-surface/60"
                 }`}
               >
-                <div className="mb-2 flex justify-center">
-                  <CategoryIcon className="h-5 w-5 text-slate-700" />
+                <div className={`mb-2 flex justify-center transition-transform duration-300 ${!isActive ? "group-hover:scale-110" : ""}`}>
+                  <CategoryIcon className={`h-5 w-5 ${isActive ? "text-accent" : "text-muted group-hover:text-accent"}`} />
                 </div>
-                <p className="text-sm font-medium text-slate-900">{category.label}</p>
+                <p className={`text-sm font-medium ${isActive ? "text-accent" : "text-foreground-secondary"}`}>
+                  {category.label}
+                </p>
               </button>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
+      </div>
 
-        {/* Requests Grid */}
-        {filteredRequests.length === 0 ? (
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 py-16 text-center">
-            <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">{t.emptyTitle}</h3>
-            <p className="text-slate-600">{t.emptySubtitle}</p>
+      {/* Requests Grid */}
+      {filteredRequests.length === 0 ? (
+        <div className="rounded-2xl border-2 border-dashed border-border bg-surface/30 py-16 text-center backdrop-blur-sm">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-elevated">
+            <Package className="w-8 h-8 text-muted" />
           </div>
-        ) : (
-          <div className="space-y-6">
-            <p className="text-sm text-slate-600 font-medium">
-              {filteredRequests.length} {filteredRequests.length === 1 ? t.requestSingle : t.requestPlural} {t.requestsAvailable}
+          <h3 className="text-lg font-semibold text-foreground mb-2">{t.emptyTitle}</h3>
+          <p className="text-muted">{t.emptySubtitle}</p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted font-medium">
+              <span className="text-accent font-bold">{filteredRequests.length}</span>{" "}
+              {filteredRequests.length === 1 ? t.requestSingle : t.requestPlural} {t.requestsAvailable}
             </p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredRequests.map((request) => (
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredRequests.map((request, idx) => (
+              <div
+                key={request.id}
+                className="animate-fade-up"
+                style={{ animationDelay: `${idx * 50}ms` }}
+              >
                 <RequestCard
-                  key={request.id}
                   request={request}
                   user={user}
                   ctaLabel={t.makeOffer}
@@ -239,12 +258,11 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
                   isRtl={isRtl}
                   lang={lang}
                 />
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
-

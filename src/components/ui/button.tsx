@@ -1,9 +1,9 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "secondary" | "outline" | "ghost" | "destructive";
-  size?: "default" | "sm" | "lg";
+  variant?: "default" | "secondary" | "outline" | "ghost" | "destructive" | "accent";
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -12,16 +12,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50",
           {
-            "bg-primary-600 text-white shadow-subtle hover:-translate-y-px hover:bg-primary-700 hover:shadow-subtle-hover": variant === "default",
-            "bg-primary-50 text-primary-700 hover:bg-primary-100": variant === "secondary",
-            "border ui-border-color bg-surface text-slate-700 hover:bg-slate-50": variant === "outline",
-            "text-slate-600 hover:bg-slate-100": variant === "ghost",
-            "bg-danger-500 text-white hover:bg-danger-700": variant === "destructive",
-            "h-9 px-4 py-2 text-sm": size === "default",
-            "h-8 px-3 text-xs": size === "sm",
-            "h-11 px-8 text-base": size === "lg",
+            // Accent (Primary CTA) - Coral/Orange
+            "bg-accent text-white shadow-[0_4px_14px_rgba(255,107,74,0.35)] hover:bg-accent-hover hover:shadow-[0_6px_20px_rgba(255,107,74,0.45)] hover:-translate-y-0.5 active:translate-y-0": variant === "default" || variant === "accent",
+            
+            // Secondary - Subtle background
+            "bg-surface-elevated text-foreground border border-border hover:bg-surface-hover hover:border-border-accent": variant === "secondary",
+            
+            // Outline - Glass effect
+            "border border-border bg-transparent text-foreground backdrop-blur-sm hover:bg-surface/50 hover:border-accent/30": variant === "outline",
+            
+            // Ghost - Minimal
+            "text-foreground-secondary hover:text-foreground hover:bg-surface-elevated/50": variant === "ghost",
+            
+            // Destructive
+            "bg-danger text-white hover:bg-danger/90 shadow-[0_4px_14px_rgba(248,113,113,0.25)]": variant === "destructive",
+            
+            // Sizes
+            "h-10 px-5 py-2.5 text-sm": size === "default",
+            "h-9 px-4 text-xs": size === "sm",
+            "h-12 px-8 text-base": size === "lg",
+            "h-10 w-10 p-0": size === "icon",
           },
           className
         )}
@@ -32,4 +44,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 export { Button };
-
