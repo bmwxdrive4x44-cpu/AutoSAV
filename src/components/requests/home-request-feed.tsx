@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { RequestCard } from "@/components/requests/request-card";
-import { Search, Package, Smartphone, Shirt, Home, Car } from "lucide-react";
+import { Search, Package, Smartphone, Shirt, Home, Car, Plane } from "lucide-react";
 
 type HomeRequest = {
   id: string;
@@ -53,81 +53,81 @@ const FEED_COPY: Record<
   }
 > = {
   fr: {
-    title: "Demandes actives",
-    subtitle: "Parcourez les opportunites et proposez vos meilleures offres.",
+    title: "Demandes en attente de voyageurs",
+    subtitle: "Ces acheteurs cherchent quelqu'un pour leur ramener un produit. Proposez votre aide !",
     searchPlaceholder: "Rechercher par produit, pays...",
-    categoriesTitle: "Categories populaires",
+    categoriesTitle: "Filtrer par categorie",
     categories: [
       { label: "Electronique", searchTerm: "electronic" },
       { label: "Mode", searchTerm: "fashion" },
-      { label: "Maison & Jardin", searchTerm: "home" },
-      { label: "Pieces Auto", searchTerm: "auto" },
+      { label: "Maison", searchTerm: "home" },
+      { label: "Auto", searchTerm: "auto" },
     ],
-    emptyTitle: "Aucune demande trouvee",
-    emptySubtitle: "Essayez une autre recherche ou revenez plus tard.",
+    emptyTitle: "Aucune demande pour le moment",
+    emptySubtitle: "Revenez plus tard ou soyez le premier a publier une demande !",
     requestsAvailable: "disponible",
     requestSingle: "demande",
     requestPlural: "demandes",
-    makeOffer: "Faire une offre",
+    makeOffer: "Proposer mon aide",
     card: {
       budget: "Budget",
       from: "Depuis",
       active: "Actif",
-      highPriority: "Priorite haute",
+      highPriority: "Urgent",
       statusCompleted: "Termine",
       statusInProgress: "En cours",
       statusOpen: "Ouvert",
     },
   },
   en: {
-    title: "Active Requests",
-    subtitle: "Browse ongoing sourcing opportunities and make competitive offers.",
-    searchPlaceholder: "Search by product name, country...",
-    categoriesTitle: "Popular categories",
+    title: "Requests waiting for travelers",
+    subtitle: "These buyers are looking for someone to bring them a product. Offer your help!",
+    searchPlaceholder: "Search by product, country...",
+    categoriesTitle: "Filter by category",
     categories: [
       { label: "Electronics", searchTerm: "electronic" },
       { label: "Fashion", searchTerm: "fashion" },
-      { label: "Home & Garden", searchTerm: "home" },
-      { label: "Auto Parts", searchTerm: "auto" },
+      { label: "Home", searchTerm: "home" },
+      { label: "Auto", searchTerm: "auto" },
     ],
-    emptyTitle: "No requests found",
-    emptySubtitle: "Try adjusting your search or check back later.",
+    emptyTitle: "No requests at the moment",
+    emptySubtitle: "Check back later or be the first to post a request!",
     requestsAvailable: "available",
     requestSingle: "request",
     requestPlural: "requests",
-    makeOffer: "Make an offer",
+    makeOffer: "Offer my help",
     card: {
       budget: "Budget",
       from: "From",
       active: "Active",
-      highPriority: "High Priority",
+      highPriority: "Urgent",
       statusCompleted: "Completed",
       statusInProgress: "In Progress",
       statusOpen: "Open",
     },
   },
   ar: {
-    title: "الطلبات النشطة",
-    subtitle: "تصفح الفرص الحالية وقدم عرضا مناسبا بسرعة.",
-    searchPlaceholder: "ابحث باسم المنتج أو البلد...",
-    categoriesTitle: "فئات شائعة",
+    title: "طلبات بانتظار المسافرين",
+    subtitle: "هؤلاء المشترون يبحثون عن شخص يجلب لهم منتجا. قدم مساعدتك!",
+    searchPlaceholder: "ابحث بالمنتج او البلد...",
+    categoriesTitle: "فلتر حسب الفئة",
     categories: [
-      { label: "إلكترونيات", searchTerm: "electronic" },
-      { label: "ملابس", searchTerm: "fashion" },
-      { label: "منزل وحديقة", searchTerm: "home" },
-      { label: "قطع السيارات", searchTerm: "auto" },
+      { label: "الكترونيات", searchTerm: "electronic" },
+      { label: "ازياء", searchTerm: "fashion" },
+      { label: "منزل", searchTerm: "home" },
+      { label: "سيارات", searchTerm: "auto" },
     ],
-    emptyTitle: "لا توجد طلبات",
-    emptySubtitle: "غير كلمات البحث أو عد لاحقا.",
+    emptyTitle: "لا توجد طلبات حاليا",
+    emptySubtitle: "عد لاحقا او كن اول من ينشر طلبا!",
     requestsAvailable: "متاح",
     requestSingle: "طلب",
     requestPlural: "طلبات",
-    makeOffer: "قدم عرض",
+    makeOffer: "قدم مساعدتي",
     card: {
       budget: "الميزانية",
       from: "من",
       active: "نشط",
-      highPriority: "أولوية عالية",
+      highPriority: "عاجل",
       statusCompleted: "مكتمل",
       statusInProgress: "قيد التنفيذ",
       statusOpen: "مفتوح",
@@ -159,35 +159,39 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
   }, [query, requests, selectedCategory]);
 
   return (
-    <section className="py-16 md:py-24 border-t border-slate-200 bg-slate-50/70" id="requests">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900">{t.title}</h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">{t.subtitle}</p>
+    <section className="relative" id="requests">
+      {/* Header */}
+      <div className="mb-10 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-highlight-soft text-highlight font-semibold text-sm mb-4">
+          <Plane className="w-4 h-4" />
+          {filteredRequests.length} {filteredRequests.length === 1 ? t.requestSingle : t.requestPlural}
         </div>
+        <h2 className="mb-3">{t.title}</h2>
+        <p className="text-muted max-w-2xl mx-auto">{t.subtitle}</p>
+      </div>
 
-        {/* Search Bar */}
-        <div className="mb-12 max-w-2xl mx-auto">
-          <div className="relative">
-            <Search className={`absolute top-1/2 w-5 h-5 -translate-y-1/2 text-slate-400 ${isRtl ? "right-4" : "left-4"}`} />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t.searchPlaceholder}
-              className={`h-14 rounded-xl border-slate-300 bg-slate-100 text-base shadow-sm focus:ring-2 focus:ring-primary-500 ${isRtl ? "pr-12 pl-5 text-right" : "pl-12 pr-5"}`}
-            />
-          </div>
+      {/* Search Bar */}
+      <div className="mb-8 max-w-xl mx-auto">
+        <div className="relative">
+          <Search className={`absolute top-1/2 w-5 h-5 -translate-y-1/2 text-muted ${isRtl ? "right-4" : "left-4"}`} />
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t.searchPlaceholder}
+            className={`h-12 rounded-full border-border bg-surface text-base placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 ${isRtl ? "pr-12 pl-4 text-right" : "pl-12 pr-4"}`}
+          />
         </div>
+      </div>
 
-        {/* Popular Categories */}
-        <div className="mb-12">
-          <p className="text-sm font-semibold text-slate-600 mb-4">{t.categoriesTitle}</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {t.categories.map((category, index) => {
-              const CategoryIcon = CATEGORY_ICONS[index];
+      {/* Category Filters */}
+      <div className="mb-10">
+        <p className="text-sm font-medium text-muted mb-4 text-center">{t.categoriesTitle}</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {t.categories.map((category, index) => {
+            const CategoryIcon = CATEGORY_ICONS[index];
+            const isActive = selectedCategory === category.searchTerm;
 
-              return (
+            return (
               <button
                 key={category.label}
                 onClick={() => {
@@ -196,55 +200,52 @@ export function HomeRequestFeed({ requests, user, lang, isRtl }: HomeRequestFeed
                     setQuery("");
                     return;
                   }
-
                   setSelectedCategory(category.searchTerm);
                   setQuery(category.searchTerm);
                 }}
-                className={`p-4 rounded-lg border-2 transition-all text-center ${
-                  selectedCategory === category.searchTerm
-                    ? "border-primary-600 bg-primary-50"
-                    : "border-slate-300 bg-slate-100 hover:border-slate-400"
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all duration-300 ${
+                  isActive
+                    ? "border-accent bg-accent text-white"
+                    : "border-border bg-surface text-muted hover:border-accent/50 hover:text-accent"
                 }`}
               >
-                <div className="mb-2 flex justify-center">
-                  <CategoryIcon className="h-5 w-5 text-slate-700" />
-                </div>
-                <p className="text-sm font-medium text-slate-900">{category.label}</p>
+                <CategoryIcon className="h-4 w-4" />
+                <span className="text-sm font-medium">{category.label}</span>
               </button>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
-
-        {/* Requests Grid */}
-        {filteredRequests.length === 0 ? (
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 py-16 text-center">
-            <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">{t.emptyTitle}</h3>
-            <p className="text-slate-600">{t.emptySubtitle}</p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <p className="text-sm text-slate-600 font-medium">
-              {filteredRequests.length} {filteredRequests.length === 1 ? t.requestSingle : t.requestPlural} {t.requestsAvailable}
-            </p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredRequests.map((request) => (
-                <RequestCard
-                  key={request.id}
-                  request={request}
-                  user={user}
-                  ctaLabel={t.makeOffer}
-                  labels={t.card}
-                  isRtl={isRtl}
-                  lang={lang}
-                />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Requests Grid */}
+      {filteredRequests.length === 0 ? (
+        <div className="rounded-2xl border-2 border-dashed border-border bg-surface py-16 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft">
+            <Package className="w-8 h-8 text-accent" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">{t.emptyTitle}</h3>
+          <p className="text-muted">{t.emptySubtitle}</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredRequests.map((request, idx) => (
+            <div
+              key={request.id}
+              className="animate-fade-up"
+              style={{ animationDelay: `${idx * 50}ms` }}
+            >
+              <RequestCard
+                request={request}
+                user={user}
+                ctaLabel={t.makeOffer}
+                labels={t.card}
+                isRtl={isRtl}
+                lang={lang}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
-

@@ -1,11 +1,10 @@
-﻿import Link from "next/link";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CategoryBadge } from "@/components/categories";
 import { getCategoryLabel } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
-import { MapPin, TrendingUp, Clock } from "lucide-react";
+import { MapPin, Plane, ArrowRight } from "lucide-react";
 
 type User = {
   id: string;
@@ -64,23 +63,20 @@ function getMarketplaceStatus(
   if (status === "SHIPPED" || status === "DELIVERED") {
     return { 
       label: t.statusCompleted,
-      className: "bg-green-50 text-green-700 border border-green-200",
-      badgeColor: "bg-green-100"
+      className: "bg-success-soft text-success",
     };
   }
 
   if (["OFFER_ACCEPTED", "PAYMENT_PENDING", "PURCHASE_IN_PROGRESS", "PAYMENT_RELEASED"].includes(status)) {
     return { 
       label: t.statusInProgress,
-      className: "bg-blue-50 text-blue-700 border border-blue-200",
-      badgeColor: "bg-blue-100"
+      className: "bg-sky-soft text-sky",
     };
   }
 
   return { 
     label: t.statusOpen,
-    className: "bg-amber-50 text-amber-700 border border-amber-200",
-    badgeColor: "bg-amber-100"
+    className: "bg-accent-soft text-accent",
   };
 }
 
@@ -100,82 +96,64 @@ export function RequestCard({ request, user, ctaLabel = "Make an offer", labels,
   const ctaText = isOwnRequest ? "Voir ma demande" : ctaLabel;
 
   return (
-    <Card className="group h-full overflow-hidden border border-slate-300 bg-slate-50 shadow-sm hover:shadow-xl hover:border-primary-300 transition-all duration-300">
-      {/* Header with status */}
-      <CardHeader className="space-y-3 pb-3 relative">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <h3 className="text-base font-semibold text-slate-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
-              {request.title}
-            </h3>
-          </div>
-        </div>
-
-        {/* Category badge */}
-        {request.category && (
-          <CategoryBadge
-            categoryName={categoryLabel ?? request.category.name}
-            categorySlug={request.category.slug}
-            categoryIcon={request.category.icon}
-            asLink={true}
-          />
-        )}
-
-        {/* Status badge */}
-        <div className="flex items-center gap-2">
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${marketplaceStatus.className}`}>
-            <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${marketplaceStatus.badgeColor}`} />
+    <div className="travel-card group h-full flex flex-col">
+      {/* Header with destination */}
+      <div className="p-5 pb-4 border-b border-border">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <h3 className="text-base font-bold text-foreground line-clamp-2 group-hover:text-accent transition-colors">
+            {request.title}
+          </h3>
+          <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold ${marketplaceStatus.className}`}>
             {marketplaceStatus.label}
           </span>
         </div>
-      </CardHeader>
 
-      {/* Content */}
-      <CardContent className="space-y-6">
-        {/* Budget and Location Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5 p-3 rounded-lg bg-slate-100">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{t.budget}</p>
-            <p className="text-lg font-bold text-slate-900">{formatPrice(request.budget)}</p>
+        {/* From location - prominent */}
+        <div className="flex items-center gap-2 text-accent">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-accent-soft">
+            <Plane className="w-4 h-4" />
           </div>
-
-          <div className="space-y-1.5 p-3 rounded-lg bg-slate-100">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{t.from}</p>
-            <div className={`flex items-center gap-1.5 text-sm font-semibold text-slate-900 ${isRtl ? "justify-end" : ""}`}>
-              <MapPin className="h-4 w-4 text-primary-600 flex-shrink-0" />
-              <span className="truncate">{request.countryToBuyFrom}</span>
-            </div>
+          <div>
+            <p className="text-xs text-muted">{t.from}</p>
+            <p className="font-semibold text-foreground">{request.countryToBuyFrom}</p>
           </div>
         </div>
+      </div>
 
-        {/* Quick info */}
-        <div className="flex items-center gap-4 text-xs text-slate-500 border-t border-slate-100 pt-4">
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4" />
-            <span>{t.active}</span>
+      {/* Content */}
+      <div className="p-5 flex-1 flex flex-col">
+        {/* Category */}
+        {request.category && (
+          <div className="mb-4">
+            <CategoryBadge
+              categoryName={categoryLabel ?? request.category.name}
+              categorySlug={request.category.slug}
+              categoryIcon={request.category.icon}
+              asLink={true}
+            />
           </div>
-          <div className="flex items-center gap-1.5">
-            <TrendingUp className="w-4 h-4" />
-            <span>{t.highPriority}</span>
-          </div>
+        )}
+
+        {/* Budget - big and prominent */}
+        <div className="mb-5 p-4 rounded-xl bg-accent-soft/50 border border-accent/10">
+          <p className="text-xs text-muted mb-1">{t.budget}</p>
+          <p className="text-2xl font-bold text-accent font-display">{formatPrice(request.budget)}</p>
         </div>
 
         {/* CTA Button */}
-        <Link href={ctaHref} className="block">
+        <Link href={ctaHref} className="block mt-auto">
           <Button 
             size="sm" 
             variant={isOwnRequest ? "outline" : "default"}
-            className={
-              isOwnRequest
-                ? "w-full"
-                : "w-full bg-primary-600 hover:bg-primary-700 text-white shadow-sm hover:shadow-md transition-all group-hover:shadow-lg"
-            }
+            className="w-full"
           >
             {ctaText}
+            {!isOwnRequest && (
+              <ArrowRight className={`w-4 h-4 ${isRtl ? "mr-2 rotate-180" : "ml-2"}`} />
+            )}
           </Button>
         </Link>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-

@@ -1,4 +1,4 @@
-﻿import { ReactNode } from "react";
+import { ReactNode } from "react";
 import * as Icons from "lucide-react";
 
 interface CategoryCardProps {
@@ -10,9 +10,6 @@ interface CategoryCardProps {
   isSelected?: boolean;
 }
 
-/**
- * Icon map for category icons
- */
 const ICON_MAP: Record<string, string> = {
   "Wrench": "Wrench",
   "Zap": "Zap",
@@ -22,6 +19,10 @@ const ICON_MAP: Record<string, string> = {
   "Hammer": "Hammer",
   "Heart": "Heart",
   "Package": "Package",
+  "Car": "Car",
+  "Smartphone": "Smartphone",
+  "Home": "Home",
+  "Utensils": "Utensils",
 };
 
 function getIconComponent(iconName: string | null | undefined): ReactNode {
@@ -29,7 +30,7 @@ function getIconComponent(iconName: string | null | undefined): ReactNode {
     return <Icons.Package className="w-6 h-6" />;
   }
 
-  const Icon = Icons[iconName as keyof typeof Icons] as any;
+  const Icon = Icons[iconName as keyof typeof Icons] as React.ComponentType<{ className?: string }>;
   if (!Icon) {
     return <Icons.Package className="w-6 h-6" />;
   }
@@ -52,23 +53,24 @@ export function CategoryCard({
       href={href}
       onClick={onClick}
       className={`
-        group relative flex flex-col items-center justify-center gap-3 p-6 rounded-xl
-        transition-all duration-200 cursor-pointer text-center
+        group relative flex flex-col items-center justify-center gap-3 p-6 rounded-2xl
+        transition-all duration-300 cursor-pointer text-center
+        border bg-surface
         ${
           isSelected
-            ? "bg-slate-900 text-white shadow-lg shadow-slate-900/50 scale-105"
-            : "bg-white border border-slate-200 text-slate-900 hover:border-slate-300 hover:shadow-md"
+            ? "border-accent bg-accent-soft text-accent shadow-travel"
+            : "border-border hover:border-accent/30 hover:shadow-card-hover hover:-translate-y-1"
         }
       `}
     >
       {/* Icon */}
       <div
         className={`
-          p-3 rounded-lg transition-all duration-200
+          p-3 rounded-xl transition-all duration-300
           ${
             isSelected
-              ? "bg-slate-800 text-white"
-              : "bg-slate-100 text-slate-900 group-hover:bg-slate-200"
+              ? "bg-accent text-white"
+              : "bg-accent-soft text-accent group-hover:bg-accent group-hover:text-white group-hover:scale-110"
           }
         `}
       >
@@ -76,15 +78,16 @@ export function CategoryCard({
       </div>
 
       {/* Name */}
-      <p className="font-medium text-sm leading-tight">{name}</p>
+      <p className={`font-semibold text-sm leading-tight ${isSelected ? "text-accent" : "text-foreground"}`}>
+        {name}
+      </p>
 
       {/* Selection indicator */}
       {isSelected && (
-        <div className="absolute top-2 right-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="absolute top-3 right-3">
+          <div className="w-2 h-2 rounded-full bg-accent" />
         </div>
       )}
     </Component>
   );
 }
-

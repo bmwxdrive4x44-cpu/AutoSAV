@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Sora } from "next/font/google";
 import "./globals.css";
 
@@ -13,11 +13,17 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "DzMarket - Marketplace de demandes de produits",
-  description: "Trouvez des produits introuvables en Algerie via des Agents buyer a l'etranger.",
+  title: "AutoSAV - Voyagez, Rapportez, Gagnez",
+  description: "La marketplace qui connecte les voyageurs avec ceux qui cherchent des produits du monde entier. Rentabilisez vos voyages en rapportant des colis.",
   icons: {
     icon: "/favicon.svg",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#faf7f3",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -26,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={`${manrope.variable} ${sora.variable} antialiased bg-slate-50 text-slate-900`}>
+    <html lang="fr" className="bg-bg">
+      <body className={`${manrope.variable} ${sora.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

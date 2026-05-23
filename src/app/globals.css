@@ -3,33 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --bg: 246 248 252;
+  /* Bright Travel Theme - Warm beige/cream with green accents */
+  --bg: 250 247 243;
+  --bg-warm: 245 240 232;
+  --bg-cream: 255 253 250;
   --surface: 255 255 255;
-  --surface-elevated: 252 253 255;
-  --border-subtle: 226 232 240;
-  --text-primary: 15 23 42;
-  --text-secondary: 51 65 85;
-  --text-muted: 100 116 139;
-  --primary: 47 111 237;
-  --primary-soft: 238 244 255;
-  --success: 28 154 95;
-  --warning: 212 139 20;
-  --danger: 214 69 69;
-}
-
-.dark {
-  --bg: 11 18 32;
-  --surface: 17 25 40;
-  --surface-elevated: 23 33 54;
-  --border-subtle: 45 57 77;
-  --text-primary: 241 245 249;
-  --text-secondary: 203 213 225;
-  --text-muted: 148 163 184;
-  --primary: 96 146 255;
-  --primary-soft: 29 49 90;
-  --success: 53 201 128;
-  --warning: 235 181 75;
-  --danger: 241 108 108;
+  --surface-elevated: 255 255 255;
+  --surface-hover: 252 250 247;
+  --border-subtle: 230 222 210;
+  --border-accent: 200 190 175;
+  --text-primary: 35 45 35;
+  --text-secondary: 75 85 75;
+  --text-muted: 130 140 130;
+  
+  /* Forest Green accent - travel, nature, adventure */
+  --accent: 45 90 60;
+  --accent-light: 65 120 80;
+  --accent-soft: 220 235 225;
+  --accent-hover: 35 75 50;
+  
+  /* Warm coral/terracotta for highlights */
+  --highlight: 235 120 90;
+  --highlight-soft: 255 235 225;
+  
+  /* Sky blue for travel elements */
+  --sky: 100 180 220;
+  --sky-soft: 230 245 255;
+  
+  /* Status colors */
+  --success: 45 160 90;
+  --success-soft: 220 250 230;
+  --warning: 220 160 50;
+  --warning-soft: 255 248 220;
+  --danger: 220 80 70;
+  --danger-soft: 255 235 235;
 }
 
 @layer base {
@@ -37,55 +44,223 @@
     border-color: rgb(var(--border-subtle));
   }
 
-  body {
-    @apply bg-bg text-foreground antialiased;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    font-size: 15px;
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    background-image: radial-gradient(circle at 8% -10%, rgb(var(--primary-soft) / 0.7), transparent 38%);
-    background-attachment: fixed;
+  html {
+    background: rgb(var(--bg));
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  body {
+    @apply text-foreground antialiased;
+    font-family: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    background: rgb(var(--bg));
+  }
+
+  h1, h2, h3, h4, h5, h6 {
     color: rgb(var(--text-primary));
-    letter-spacing: -0.03em;
-    font-weight: 600;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    font-family: var(--font-sora), var(--font-manrope), ui-sans-serif, system-ui;
   }
 
   h1 {
-    font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.25rem);
-    line-height: 1.2;
+    font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
   }
 
   h2 {
-    font-size: clamp(1.2rem, 1rem + 0.9vw, 1.6rem);
+    font-size: clamp(1.75rem, 1.4rem + 1.8vw, 2.75rem);
+    line-height: 1.15;
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 1.1rem + 0.6vw, 1.5rem);
     line-height: 1.25;
   }
 
   p {
     color: rgb(var(--text-secondary));
   }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.2);
+    color: rgb(var(--accent));
+  }
 }
 
 @layer components {
+  /* Marquee animation for scrolling text */
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    gap: 2rem;
+  }
+
+  .marquee-content {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+    min-width: 100%;
+    animation: scroll 25s linear infinite;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
   .surface-card {
-    @apply rounded-lg border bg-surface shadow-subtle;
+    @apply rounded-2xl border bg-surface;
     border-color: rgb(var(--border-subtle));
+    box-shadow: 0 2px 8px rgb(35 45 35 / 0.04), 0 8px 24px rgb(35 45 35 / 0.06);
+  }
+
+  .surface-card-hover {
+    @apply surface-card transition-all duration-300;
+  }
+
+  .surface-card-hover:hover {
+    box-shadow: 0 4px 16px rgb(35 45 35 / 0.08), 0 16px 40px rgb(35 45 35 / 0.1);
+    transform: translateY(-4px);
+  }
+
+  .travel-card {
+    @apply rounded-3xl overflow-hidden;
+    background: rgb(var(--surface));
+    border: 1px solid rgb(var(--border-subtle));
+    box-shadow: 0 4px 20px rgb(35 45 35 / 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .travel-card:hover {
+    box-shadow: 0 12px 40px rgb(35 45 35 / 0.12);
+    transform: translateY(-6px) scale(1.01);
   }
 
   .kpi-value {
-    @apply text-2xl font-semibold tracking-tight text-foreground;
+    @apply text-4xl font-bold tracking-tight;
+    color: rgb(var(--text-primary));
+    font-family: var(--font-sora), var(--font-manrope), ui-sans-serif;
+  }
+
+  .accent-text {
+    color: rgb(var(--accent));
+  }
+
+  .highlight-text {
+    color: rgb(var(--highlight));
+  }
+
+  .btn-primary {
+    @apply rounded-full font-semibold transition-all duration-300 px-6 py-3;
+    background: rgb(var(--accent));
+    color: white;
+    border: 2px solid rgb(var(--accent));
+  }
+
+  .btn-primary:hover {
+    background: rgb(var(--accent-hover));
+    border-color: rgb(var(--accent-hover));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgb(var(--accent) / 0.3);
+  }
+
+  .btn-outline {
+    @apply rounded-full font-semibold transition-all duration-300 px-6 py-3;
+    background: transparent;
+    color: rgb(var(--accent));
+    border: 2px solid rgb(var(--accent));
+  }
+
+  .btn-outline:hover {
+    background: rgb(var(--accent));
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .tag-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium;
+    background: rgb(var(--accent-soft));
+    color: rgb(var(--accent));
+  }
+
+  .destination-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold;
+    background: rgb(var(--sky-soft));
+    color: rgb(100 160 200);
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .photo-grid img {
+    @apply w-full h-full object-cover;
+    aspect-ratio: 1;
+  }
+
+  .hero-image-stack {
+    position: relative;
+  }
+
+  .hero-image-stack > * {
+    @apply rounded-2xl overflow-hidden shadow-xl;
+  }
+
+  /* Accordion styling */
+  .accordion-item {
+    @apply border-b border-border py-5;
+  }
+
+  .accordion-trigger {
+    @apply flex items-center justify-between w-full text-left font-semibold text-lg;
+    color: rgb(var(--text-primary));
+  }
+
+  .accordion-content {
+    @apply pt-3 text-base;
+    color: rgb(var(--text-secondary));
   }
 }
 
 @layer utilities {
   .ui-border-color {
     border-color: rgb(var(--border-subtle));
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .bg-warm {
+    background: rgb(var(--bg-warm));
+  }
+
+  .bg-cream {
+    background: rgb(var(--bg-cream));
   }
 }
