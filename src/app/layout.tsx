@@ -13,15 +13,15 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "AutoSAV - Marketplace de Sourcing International",
-  description: "Trouvez des produits uniques via des agents acheteurs vérifiés dans le monde entier. La plateforme de confiance pour le sourcing international.",
+  title: "AutoSAV - Voyagez, Rapportez, Gagnez",
+  description: "La marketplace qui connecte les voyageurs avec ceux qui cherchent des produits du monde entier. Rentabilisez vos voyages en rapportant des colis.",
   icons: {
     icon: "/favicon.svg",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080c15",
+  themeColor: "#faf7f3",
   width: "device-width",
   initialScale: 1,
 };

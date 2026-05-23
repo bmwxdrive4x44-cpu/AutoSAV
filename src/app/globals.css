@@ -3,64 +3,40 @@
 @tailwind utilities;
 
 :root {
-  /* Dark theme by default - premium marketplace feel */
-  --bg: 8 12 21;
-  --bg-gradient: 12 18 32;
-  --surface: 15 22 36;
-  --surface-elevated: 22 32 52;
-  --surface-hover: 28 40 65;
-  --border-subtle: 40 55 80;
-  --border-accent: 60 80 110;
-  --text-primary: 248 250 252;
-  --text-secondary: 180 195 215;
-  --text-muted: 120 140 170;
-  
-  /* Coral/Orange accent - energetic and modern */
-  --accent: 255 107 74;
-  --accent-soft: 255 107 74;
-  --accent-hover: 255 130 100;
-  
-  /* Primary blue for secondary actions */
-  --primary: 80 140 255;
-  --primary-soft: 80 140 255;
-  
-  /* Status colors */
-  --success: 52 211 153;
-  --success-soft: 20 83 60;
-  --warning: 251 191 36;
-  --warning-soft: 92 68 14;
-  --danger: 248 113 113;
-  --danger-soft: 80 30 30;
-  
-  /* Glass effect variables */
-  --glass-bg: 15 22 36;
-  --glass-border: 50 70 100;
-}
-
-.light {
-  --bg: 250 251 254;
-  --bg-gradient: 245 248 255;
+  /* Bright Travel Theme - Warm beige/cream with green accents */
+  --bg: 250 247 243;
+  --bg-warm: 245 240 232;
+  --bg-cream: 255 253 250;
   --surface: 255 255 255;
   --surface-elevated: 255 255 255;
-  --surface-hover: 248 250 255;
-  --border-subtle: 220 230 245;
-  --border-accent: 200 215 235;
-  --text-primary: 15 23 42;
-  --text-secondary: 60 75 95;
-  --text-muted: 100 120 145;
-  --accent: 235 90 60;
-  --accent-soft: 255 240 235;
-  --accent-hover: 220 75 45;
-  --primary: 50 110 235;
-  --primary-soft: 235 245 255;
-  --success: 22 163 74;
-  --success-soft: 220 252 231;
-  --warning: 202 138 4;
-  --warning-soft: 254 249 195;
-  --danger: 220 38 38;
-  --danger-soft: 254 226 226;
-  --glass-bg: 255 255 255;
-  --glass-border: 220 230 245;
+  --surface-hover: 252 250 247;
+  --border-subtle: 230 222 210;
+  --border-accent: 200 190 175;
+  --text-primary: 35 45 35;
+  --text-secondary: 75 85 75;
+  --text-muted: 130 140 130;
+  
+  /* Forest Green accent - travel, nature, adventure */
+  --accent: 45 90 60;
+  --accent-light: 65 120 80;
+  --accent-soft: 220 235 225;
+  --accent-hover: 35 75 50;
+  
+  /* Warm coral/terracotta for highlights */
+  --highlight: 235 120 90;
+  --highlight-soft: 255 235 225;
+  
+  /* Sky blue for travel elements */
+  --sky: 100 180 220;
+  --sky-soft: 230 245 255;
+  
+  /* Status colors */
+  --success: 45 160 90;
+  --success-soft: 220 250 230;
+  --warning: 220 160 50;
+  --warning-soft: 255 248 220;
+  --danger: 220 80 70;
+  --danger-soft: 255 235 235;
 }
 
 @layer base {
@@ -69,7 +45,7 @@
   }
 
   html {
-    @apply bg-bg;
+    background: rgb(var(--bg));
   }
 
   body {
@@ -79,76 +55,95 @@
     line-height: 1.6;
     letter-spacing: -0.01em;
     background: rgb(var(--bg));
-    background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--accent-soft) / 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 0%, rgb(var(--primary-soft) / 0.08), transparent);
-    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
     color: rgb(var(--text-primary));
     letter-spacing: -0.025em;
-    font-weight: 600;
+    font-weight: 700;
     font-family: var(--font-sora), var(--font-manrope), ui-sans-serif, system-ui;
   }
 
   h1 {
-    font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
   }
 
   h2 {
-    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
-    line-height: 1.2;
+    font-size: clamp(1.75rem, 1.4rem + 1.8vw, 2.75rem);
+    line-height: 1.15;
   }
 
   h3 {
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
-    line-height: 1.3;
+    font-size: clamp(1.2rem, 1.1rem + 0.6vw, 1.5rem);
+    line-height: 1.25;
   }
 
   p {
     color: rgb(var(--text-secondary));
   }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.2);
+    color: rgb(var(--accent));
+  }
 }
 
 @layer components {
+  /* Marquee animation for scrolling text */
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    gap: 2rem;
+  }
+
+  .marquee-content {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+    min-width: 100%;
+    animation: scroll 25s linear infinite;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
   .surface-card {
-    @apply rounded-2xl border bg-surface/80 backdrop-blur-md;
+    @apply rounded-2xl border bg-surface;
     border-color: rgb(var(--border-subtle));
-    box-shadow: 
-      0 0 0 1px rgb(var(--border-subtle) / 0.5),
-      0 4px 24px rgb(0 0 0 / 0.15),
-      0 1px 3px rgb(0 0 0 / 0.1);
+    box-shadow: 0 2px 8px rgb(35 45 35 / 0.04), 0 8px 24px rgb(35 45 35 / 0.06);
   }
 
-  .glass-card {
-    @apply rounded-2xl border backdrop-blur-xl;
-    background: rgb(var(--glass-bg) / 0.6);
-    border-color: rgb(var(--glass-border) / 0.3);
-    box-shadow: 
-      0 8px 32px rgb(0 0 0 / 0.12),
-      inset 0 1px 0 rgb(255 255 255 / 0.05);
+  .surface-card-hover {
+    @apply surface-card transition-all duration-300;
   }
 
-  .glass-card-hover {
-    @apply glass-card transition-all duration-300;
+  .surface-card-hover:hover {
+    box-shadow: 0 4px 16px rgb(35 45 35 / 0.08), 0 16px 40px rgb(35 45 35 / 0.1);
+    transform: translateY(-4px);
   }
 
-  .glass-card-hover:hover {
-    background: rgb(var(--glass-bg) / 0.75);
-    border-color: rgb(var(--accent) / 0.3);
-    box-shadow: 
-      0 12px 40px rgb(0 0 0 / 0.18),
-      0 0 0 1px rgb(var(--accent) / 0.15),
-      inset 0 1px 0 rgb(255 255 255 / 0.08);
-    transform: translateY(-2px);
+  .travel-card {
+    @apply rounded-3xl overflow-hidden;
+    background: rgb(var(--surface));
+    border: 1px solid rgb(var(--border-subtle));
+    box-shadow: 0 4px 20px rgb(35 45 35 / 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .travel-card:hover {
+    box-shadow: 0 12px 40px rgb(35 45 35 / 0.12);
+    transform: translateY(-6px) scale(1.01);
   }
 
   .kpi-value {
-    @apply text-3xl font-bold tracking-tight text-foreground;
+    @apply text-4xl font-bold tracking-tight;
+    color: rgb(var(--text-primary));
     font-family: var(--font-sora), var(--font-manrope), ui-sans-serif;
   }
 
@@ -156,53 +151,81 @@
     color: rgb(var(--accent));
   }
 
-  .accent-gradient {
-    background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--primary)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .highlight-text {
+    color: rgb(var(--highlight));
   }
 
-  .glow-accent {
-    box-shadow: 0 0 40px rgb(var(--accent) / 0.25);
-  }
-
-  .glow-primary {
-    box-shadow: 0 0 30px rgb(var(--primary) / 0.2);
-  }
-
-  .btn-accent {
-    @apply rounded-xl font-semibold transition-all duration-300;
+  .btn-primary {
+    @apply rounded-full font-semibold transition-all duration-300 px-6 py-3;
     background: rgb(var(--accent));
     color: white;
-    box-shadow: 0 4px 14px rgb(var(--accent) / 0.35);
+    border: 2px solid rgb(var(--accent));
   }
 
-  .btn-accent:hover {
+  .btn-primary:hover {
     background: rgb(var(--accent-hover));
-    box-shadow: 0 6px 20px rgb(var(--accent) / 0.45);
-    transform: translateY(-1px);
+    border-color: rgb(var(--accent-hover));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgb(var(--accent) / 0.3);
   }
 
-  .grid-pattern {
-    background-image: 
-      linear-gradient(rgb(var(--border-subtle) / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(var(--border-subtle) / 0.1) 1px, transparent 1px);
-    background-size: 60px 60px;
+  .btn-outline {
+    @apply rounded-full font-semibold transition-all duration-300 px-6 py-3;
+    background: transparent;
+    color: rgb(var(--accent));
+    border: 2px solid rgb(var(--accent));
   }
 
-  .line-glow {
+  .btn-outline:hover {
+    background: rgb(var(--accent));
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .tag-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium;
+    background: rgb(var(--accent-soft));
+    color: rgb(var(--accent));
+  }
+
+  .destination-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold;
+    background: rgb(var(--sky-soft));
+    color: rgb(100 160 200);
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .photo-grid img {
+    @apply w-full h-full object-cover;
+    aspect-ratio: 1;
+  }
+
+  .hero-image-stack {
     position: relative;
   }
 
-  .line-glow::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(var(--accent) / 0.5), transparent);
+  .hero-image-stack > * {
+    @apply rounded-2xl overflow-hidden shadow-xl;
+  }
+
+  /* Accordion styling */
+  .accordion-item {
+    @apply border-b border-border py-5;
+  }
+
+  .accordion-trigger {
+    @apply flex items-center justify-between w-full text-left font-semibold text-lg;
+    color: rgb(var(--text-primary));
+  }
+
+  .accordion-content {
+    @apply pt-3 text-base;
+    color: rgb(var(--text-secondary));
   }
 }
 
@@ -219,21 +242,25 @@
     animation: float 6s ease-in-out infinite;
   }
 
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
   }
 
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-12px); }
   }
 
-  @keyframes glow {
-    from { box-shadow: 0 0 20px rgb(var(--accent) / 0.2); }
-    to { box-shadow: 0 0 40px rgb(var(--accent) / 0.4); }
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .bg-warm {
+    background: rgb(var(--bg-warm));
+  }
+
+  .bg-cream {
+    background: rgb(var(--bg-cream));
   }
 }

@@ -10,9 +10,6 @@ interface CategoryCardProps {
   isSelected?: boolean;
 }
 
-/**
- * Icon map for category icons
- */
 const ICON_MAP: Record<string, string> = {
   "Wrench": "Wrench",
   "Zap": "Zap",
@@ -30,15 +27,15 @@ const ICON_MAP: Record<string, string> = {
 
 function getIconComponent(iconName: string | null | undefined): ReactNode {
   if (!iconName || !ICON_MAP[iconName]) {
-    return <Icons.Package className="w-5 h-5" />;
+    return <Icons.Package className="w-6 h-6" />;
   }
 
   const Icon = Icons[iconName as keyof typeof Icons] as React.ComponentType<{ className?: string }>;
   if (!Icon) {
-    return <Icons.Package className="w-5 h-5" />;
+    return <Icons.Package className="w-6 h-6" />;
   }
 
-  return <Icon className="w-5 h-5" />;
+  return <Icon className="w-6 h-6" />;
 }
 
 export function CategoryCard({
@@ -56,27 +53,24 @@ export function CategoryCard({
       href={href}
       onClick={onClick}
       className={`
-        group relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl
+        group relative flex flex-col items-center justify-center gap-3 p-6 rounded-2xl
         transition-all duration-300 cursor-pointer text-center
-        border backdrop-blur-sm
+        border bg-surface
         ${
           isSelected
-            ? "bg-accent/20 text-accent border-accent/30 shadow-[0_0_30px_rgba(255,107,74,0.2)]"
-            : "bg-surface/60 border-border text-foreground hover:bg-surface/80 hover:border-accent/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
+            ? "border-accent bg-accent-soft text-accent shadow-travel"
+            : "border-border hover:border-accent/30 hover:shadow-card-hover hover:-translate-y-1"
         }
       `}
     >
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/0 to-accent/0 opacity-0 group-hover:from-accent/5 group-hover:to-transparent group-hover:opacity-100 transition-all duration-500" />
-
       {/* Icon */}
       <div
         className={`
-          relative p-3 rounded-xl transition-all duration-300
+          p-3 rounded-xl transition-all duration-300
           ${
             isSelected
-              ? "bg-accent/20 text-accent"
-              : "bg-surface-elevated text-muted group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-110"
+              ? "bg-accent text-white"
+              : "bg-accent-soft text-accent group-hover:bg-accent group-hover:text-white group-hover:scale-110"
           }
         `}
       >
@@ -84,14 +78,14 @@ export function CategoryCard({
       </div>
 
       {/* Name */}
-      <p className={`relative font-medium text-sm leading-tight ${isSelected ? "text-accent" : "text-foreground-secondary group-hover:text-foreground"}`}>
+      <p className={`font-semibold text-sm leading-tight ${isSelected ? "text-accent" : "text-foreground"}`}>
         {name}
       </p>
 
       {/* Selection indicator */}
       {isSelected && (
         <div className="absolute top-3 right-3">
-          <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(255,107,74,0.6)]" />
+          <div className="w-2 h-2 rounded-full bg-accent" />
         </div>
       )}
     </Component>

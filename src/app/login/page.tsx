@@ -3,11 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/actions/auth";
 import { Header } from "@/components/layout/header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuthErrorMessage, normalizeLang, textDir, withLang } from "@/lib/i18n";
 import { getLoginCopy } from "@/lib/auth-copy";
 import { LoginSubmitButton } from "@/components/auth/login-submit-button";
-import { Package, AlertCircle, Info } from "lucide-react";
+import { Plane, AlertCircle, Info } from "lucide-react";
 
 export default function LoginPage({
   searchParams,
@@ -28,74 +27,74 @@ export default function LoginPage({
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-bg">
       <Header lang={lang} />
-      <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
-        {/* Background effects */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-accent/10 rounded-full blur-[120px] opacity-50" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-primary/10 rounded-full blur-[100px] opacity-30" />
-        </div>
-
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md" dir={isRtl ? "rtl" : "ltr"}>
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-accent/80 shadow-[0_8px_30px_rgba(255,107,74,0.3)]">
-              <Package className="w-7 h-7 text-white" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent shadow-travel">
+              <Plane className="w-7 h-7 text-white" />
             </div>
           </div>
 
-          <Card className="border-border/50">
-            <CardHeader className="text-center pb-2">
-              <CardTitle className="text-2xl">{t.title}</CardTitle>
-              <p className="text-sm text-muted mt-2">
-                {lang === "fr" ? "Connectez-vous pour accéder à votre compte" : lang === "ar" ? "سجل دخولك للوصول إلى حسابك" : "Sign in to access your account"}
+          {/* Card */}
+          <div className="bg-surface rounded-3xl border border-border p-8 shadow-card">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-foreground mb-2">{t.title}</h1>
+              <p className="text-sm text-muted">
+                {lang === "fr" ? "Connectez-vous pour acceder a votre compte" : lang === "ar" ? "سجل دخولك للوصول إلى حسابك" : "Sign in to access your account"}
               </p>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {showOfferMessage && (
-                <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm text-primary flex items-start gap-3">
-                  <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <span>{t.offerMessage}</span>
-                </div>
-              )}
-              {errorMessage && (
-                <div className="mb-6 p-4 rounded-xl bg-danger/10 border border-danger/20 text-sm text-danger flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <span>{errorMessage}</span>
-                </div>
-              )}
-              <form action={login} className="space-y-5">
-                {redirectUrl && <input type="hidden" name="redirect" value={redirectUrl} />}
-                <input type="hidden" name="lang" value={lang} />
-                {searchParams.action && <input type="hidden" name="action" value={searchParams.action} />}
-                {searchParams.role && <input type="hidden" name="role" value={searchParams.role} />}
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-foreground-secondary">{t.email}</Label>
-                  <Input id="email" name="email" type="email" placeholder={t.emailPlaceholder} required className="h-12" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-foreground-secondary">{t.password}</Label>
-                  <Input id="password" name="password" type="password" required className="h-12" />
-                </div>
-                <LoginSubmitButton idleLabel={t.submit} pendingLabel={pendingLabel} />
-              </form>
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-surface px-2 text-muted">{lang === "fr" ? "ou" : lang === "ar" ? "أو" : "or"}</span>
-                </div>
+            </div>
+
+            {showOfferMessage && (
+              <div className="mb-6 p-4 rounded-xl bg-sky-soft border border-sky/20 text-sm text-sky flex items-start gap-3">
+                <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <span>{t.offerMessage}</span>
               </div>
-              <p className="text-center text-sm text-muted">
-                {t.noAccount}{" "}
-                <Link href={registerHref} className="text-accent hover:text-accent-hover font-medium transition-colors">
-                  {t.signUp}
-                </Link>
-              </p>
-            </CardContent>
-          </Card>
+            )}
+            {errorMessage && (
+              <div className="mb-6 p-4 rounded-xl bg-danger-soft border border-danger/20 text-sm text-danger flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <form action={login} className="space-y-5">
+              {redirectUrl && <input type="hidden" name="redirect" value={redirectUrl} />}
+              <input type="hidden" name="lang" value={lang} />
+              {searchParams.action && <input type="hidden" name="action" value={searchParams.action} />}
+              {searchParams.role && <input type="hidden" name="role" value={searchParams.role} />}
+              
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-foreground font-medium">{t.email}</Label>
+                <Input id="email" name="email" type="email" placeholder={t.emailPlaceholder} required className="h-12 rounded-xl" />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-foreground font-medium">{t.password}</Label>
+                <Input id="password" name="password" type="password" required className="h-12 rounded-xl" />
+              </div>
+              
+              <LoginSubmitButton idleLabel={t.submit} pendingLabel={pendingLabel} />
+            </form>
+
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-surface px-3 text-muted">{lang === "fr" ? "ou" : lang === "ar" ? "أو" : "or"}</span>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-muted">
+              {t.noAccount}{" "}
+              <Link href={registerHref} className="text-accent hover:text-accent-hover font-semibold transition-colors">
+                {t.signUp}
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
