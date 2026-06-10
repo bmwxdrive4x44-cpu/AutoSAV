@@ -24,6 +24,28 @@ const config: Config = {
         foreground: "rgb(var(--text-primary) / <alpha-value>)",
         "foreground-secondary": "rgb(var(--text-secondary) / <alpha-value>)",
         muted: "rgb(var(--text-muted) / <alpha-value>)",
+        primary: {
+          "50": "#eef4ff",
+          "100": "#dde9ff",
+          "600": "#2f6fed",
+          "700": "#2550d8",
+          "900": "#1a2d7a",
+        },
+        success: {
+          DEFAULT: "rgb(var(--success) / <alpha-value>)",
+          soft: "rgb(var(--success-soft) / <alpha-value>)",
+          "500": "#1c9a5f",
+        },
+        warning: {
+          DEFAULT: "rgb(var(--warning) / <alpha-value>)",
+          soft: "rgb(var(--warning-soft) / <alpha-value>)",
+        },
+        danger: {
+          DEFAULT: "rgb(var(--danger) / <alpha-value>)",
+          soft: "rgb(var(--danger-soft) / <alpha-value>)",
+          "500": "#d64545",
+          "700": "#a63030",
+        },
         accent: {
           DEFAULT: "rgb(var(--accent) / <alpha-value>)",
           light: "rgb(var(--accent-light) / <alpha-value>)",
@@ -37,18 +59,6 @@ const config: Config = {
         sky: {
           DEFAULT: "rgb(var(--sky) / <alpha-value>)",
           soft: "rgb(var(--sky-soft) / <alpha-value>)",
-        },
-        success: {
-          DEFAULT: "rgb(var(--success) / <alpha-value>)",
-          soft: "rgb(var(--success-soft) / <alpha-value>)",
-        },
-        warning: {
-          DEFAULT: "rgb(var(--warning) / <alpha-value>)",
-          soft: "rgb(var(--warning-soft) / <alpha-value>)",
-        },
-        danger: {
-          DEFAULT: "rgb(var(--danger) / <alpha-value>)",
-          soft: "rgb(var(--danger-soft) / <alpha-value>)",
         },
       },
       borderRadius: {
