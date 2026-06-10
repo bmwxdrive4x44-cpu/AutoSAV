@@ -33,28 +33,10 @@ export async function updateProfile(formData: FormData) {
     data: {
       name: data.name,
       phone: data.phone || null,
+      country: data.country || null,
+      city: data.city || null,
     },
   });
-
-  const locationColumns = await prisma.$queryRaw<Array<{ column_name: string }>>`
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'User'
-      AND column_name IN ('country', 'city')
-  `;
-
-  const hasLocationColumns = locationColumns.length === 2;
-
-  if (hasLocationColumns) {
-    await prisma.user.updateMany({
-      where: { id: user.id },
-      data: {
-        country: data.country || null,
-        city: data.city || null,
-      },
-    });
-  }
 
   revalidatePath("/dashboard/profile");
   revalidatePath("/dashboard");
