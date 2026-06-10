@@ -1,381 +1,207 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Globe, Handshake, MessagesSquare, Package, Shield, Zap } from "lucide-react";
-import { getCategories } from "@/app/actions/categories";
-import { getPublicRequests } from "@/app/actions/requests";
-import { CategoryCard } from "@/components/categories";
-import { Header } from "@/components/layout/header";
-import { HomeRequestFeed } from "@/components/requests/home-request-feed";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentUser } from "@/lib/auth";
-import { getCategoryLabel, normalizeLang, textDir, withLang } from "@/lib/i18n";
-import type { Lang } from "@/lib/i18n";
+import { ArrowRight, CheckCircle2, Shield, Zap, Globe, Package, MessageSquare, Handshake } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-
-const COPY: Record<
-  Lang,
-  {
-    badge: string;
-    heroTitleStart: string;
-    heroTitleEmphasis: string;
-    heroSubtitle: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
-    trustChips: [string, string, string];
-    trustStats: [string, string];
-    trustStatLabels: [string, string];
-    showcaseLabels: [string, string, string];
-    categoriesTitle: string;
-    categoriesSubtitle: string;
-    featuresTitle: [string, string, string];
-    featuresDesc: [string, string, string];
-    howItWorksTitle: string;
-    howItWorksSubtitle: string;
-    steps: Array<{ title: string; description: string }>;
-    contactTitle: string;
-    contactSubtitle: string;
-    contactEmailLabel: string;
-    contactPhoneLabel: string;
-    contactHoursLabel: string;
-    finalCtaTitle: string;
-    finalCtaSubtitle: string;
-    finalCtaAgent: string;
-  }
-> = {
-  fr: {
-    badge: "Sourcing simplifie",
-    heroTitleStart: "Trouvez des offres fiables en",
-    heroTitleEmphasis: "quelques secondes",
-    heroSubtitle: "Connectez-vous a des fournisseurs verifies et sourcez vos produits en toute confiance.",
-    ctaPrimary: "Publier une demande",
-    ctaSecondary: "Parcourir les offres",
-    trustChips: ["Reseau verifie", "Workflow securise", "Matching rapide"],
-    trustStats: ["1,200+", "$2.5M+"],
-    trustStatLabels: ["Utilisateurs verifies", "Commandes facilitees"],
-    showcaseLabels: ["Demandes actives", "Utilisateurs verifies", "Reponse moyenne"],
-    categoriesTitle: "Parcourir par categorie",
-    categoriesSubtitle: "Trouvez exactement ce que vous cherchez en explorant nos categories principales.",
-    featuresTitle: ["Vendeurs verifies", "Reponses rapides", "Reseau mondial"],
-    featuresDesc: [
-      "Les profils actifs sont controles pour garantir la fiabilite et la qualite.",
-      "Recevez des offres en quelques heures, pas en plusieurs jours.",
-      "Connectez-vous instantanement a des fournisseurs de plusieurs pays.",
-    ],
-    howItWorksTitle: "Comment ca marche",
-    howItWorksSubtitle: "Simple, transparent et rapide. Trouvez vos produits en trois etapes.",
-    steps: [
-      {
-        title: "Publiez votre demande",
-        description: "Expliquez clairement le produit recherche, la quantite et le budget.",
-      },
-      {
-        title: "Recevez des offres",
-        description: "Des offreurs verifies repondent avec prix, delais et conditions.",
-      },
-      {
-        title: "Finalisez la commande",
-        description: "Comparez, negociez et validez. Le suivi est centralise sur la plateforme.",
-      },
-    ],
-    contactTitle: "Contact",
-    contactSubtitle: "Notre equipe vous repond rapidement pour vous aider a publier ou suivre vos demandes.",
-    contactEmailLabel: "Email",
-    contactPhoneLabel: "Telephone",
-    contactHoursLabel: "Horaires",
-    finalCtaTitle: "Pret a commencer ?",
-    finalCtaSubtitle: "Rejoignez des utilisateurs qui trouvent plus intelligemment.",
-    finalCtaAgent: "Creer un compte",
-  },
-  en: {
-    badge: "Sourcing made simple",
-    heroTitleStart: "Find trusted buying agents in",
-    heroTitleEmphasis: "seconds",
-    heroSubtitle: "Connect with verified suppliers and source products with confidence.",
-    ctaPrimary: "Post a Request",
-    ctaSecondary: "Browse Offers",
-    trustChips: ["Verified network", "Secure workflow", "Fast matching"],
-    trustStats: ["1,200+", "$2.5M+"],
-    trustStatLabels: ["Verified Users", "Orders Facilitated"],
-    showcaseLabels: ["Active requests", "Verified users", "Average response"],
-    categoriesTitle: "Browse by Category",
-    categoriesSubtitle: "Find exactly what you're looking for by exploring our main categories.",
-    featuresTitle: ["Verified Sellers", "Fast Responses", "Global Network"],
-    featuresDesc: [
-      "Active profiles are vetted to ensure reliability and quality.",
-      "Get offers within hours, not days.",
-      "Connect with trusted suppliers across multiple countries instantly.",
-    ],
-    howItWorksTitle: "How it works",
-    howItWorksSubtitle: "Simple, transparent, and fast. Source products in three clear steps.",
-    steps: [
-      {
-        title: "Post Your Request",
-        description: "Share product details, quantity, and budget.",
-      },
-      {
-        title: "Receive Offers",
-        description: "Verified providers reply with pricing, lead time, and terms.",
-      },
-      {
-        title: "Complete the Order",
-        description: "Compare, negotiate, and finalize with full visibility.",
-      },
-    ],
-    contactTitle: "Contact",
-    contactSubtitle: "Our team replies quickly to help you publish or track your requests.",
-    contactEmailLabel: "Email",
-    contactPhoneLabel: "Phone",
-    contactHoursLabel: "Hours",
-    finalCtaTitle: "Ready to get started?",
-    finalCtaSubtitle: "Join businesses sourcing smarter.",
-    finalCtaAgent: "Create an Account",
-  },
-  ar: {
-    badge: "الشراء من الخارج بطريقة سهلة",
-    heroTitleStart: "اعثر على وسيط شراء موثوق",
-    heroTitleEmphasis: "بسرعة",
-    heroSubtitle: "تواصل مع موردين موثوقين وقدم طلباتك بثقة ووضوح.",
-    ctaPrimary: "نشر طلب",
-    ctaSecondary: "تصفح العروض",
-    trustChips: ["شبكة موثوقة", "مسار آمن", "مطابقة سريعة"],
-    trustStats: ["+1200", "+2.5M$"],
-    trustStatLabels: ["وسطاء موثوقون", "طلبات مكتملة"],
-    showcaseLabels: ["طلبات نشطة", "وسطاء موثوقون", "متوسط الرد"],
-    categoriesTitle: "تصفح حسب الفئة",
-    categoriesSubtitle: "اعثر على ما تبحث عنه من خلال فئاتنا الرئيسية.",
-    featuresTitle: ["وسطاء موثوقون", "ردود سريعة", "شبكة دولية"],
-    featuresDesc: [
-      "يتم التحقق من الملفات النشطة لضمان الموثوقية والجودة.",
-      "استقبل العروض خلال ساعات بدل أيام.",
-      "تواصل فورًا مع موردين موثوقين من عدة دول.",
-    ],
-    howItWorksTitle: "كيف تعمل المنصة",
-    howItWorksSubtitle: "واضحة وسهلة وسريعة. ابدأ في ثلاث خطوات.",
-    steps: [
-      {
-        title: "انشر طلبك",
-        description: "اكتب تفاصيل المنتج والكمية والميزانية بشكل واضح.",
-      },
-      {
-        title: "استقبل العروض",
-        description: "يرد الوسطاء الموثوقون بالسعر والمدة والشروط.",
-      },
-      {
-        title: "أكمل الطلب",
-        description: "قارن وتفاوض ثم أكد العرض الأنسب لك.",
-      },
-    ],
-    contactTitle: "اتصال",
-    contactSubtitle: "فريقنا يرد بسرعة لمساعدتك في نشر أو متابعة طلباتك.",
-    contactEmailLabel: "البريد",
-    contactPhoneLabel: "الهاتف",
-    contactHoursLabel: "الأوقات",
-    finalCtaTitle: "جاهز للبدء؟",
-    finalCtaSubtitle: "انضم إلى شركات تتسوق بذكاء.",
-    finalCtaAgent: "إنشاء حساب",
-  },
-};
-
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams?: { lang?: string };
-}) {
-  const [requestsResult, userResult, categoriesResult] = await Promise.allSettled([
-    getPublicRequests(),
-    getCurrentUser(),
-    getCategories(),
-  ]);
-
-  const requests = requestsResult.status === "fulfilled" ? requestsResult.value : [];
-  const user = userResult.status === "fulfilled" ? userResult.value : null;
-  const categories = categoriesResult.status === "fulfilled" ? categoriesResult.value : [];
-
-  if (
-    requestsResult.status === "rejected" ||
-    userResult.status === "rejected" ||
-    categoriesResult.status === "rejected"
-  ) {
-    console.error("HomePage data loading failed:", {
-      requestsError: requestsResult.status === "rejected" ? requestsResult.reason : null,
-      userError: userResult.status === "rejected" ? userResult.reason : null,
-      categoriesError: categoriesResult.status === "rejected" ? categoriesResult.reason : null,
-    });
-  }
-  const lang = normalizeLang(searchParams?.lang);
-  const isRtl = textDir(lang) === "rtl";
-  const t = COPY[lang];
-
-  const highlights = [
-    { label: t.showcaseLabels[0], value: `${requests.length}+` },
-    { label: t.showcaseLabels[1], value: t.trustStats[0] },
-    { label: t.showcaseLabels[2], value: "< 2h" },
-  ];
-
-  const featureIcons = [Shield, Zap, Globe] as const;
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-bg">
-      <Header lang={lang} />
-      <div dir={isRtl ? "rtl" : "ltr"}>
-        <section className="relative overflow-hidden border-b border-slate-200/80 py-16 md:py-24">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_10%,rgba(47,111,237,0.15),transparent_32%),radial-gradient(circle_at_10%_20%,rgba(47,111,237,0.08),transparent_28%)]" />
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 md:px-6 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+    <div className="min-h-screen bg-bg text-foreground">
+      {/* Navigation */}
+      <nav className="border-b border-border-subtle bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-4 md:px-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[rgb(11,45,100)] to-[rgb(255,95,60)] text-white font-bold">
+                A
+              </div>
+              <span className="font-semibold text-lg text-text-primary">AutoSAV</span>
+            </div>
+            <button className="px-4 py-2 rounded-lg font-medium text-[rgb(255,95,60)] hover:bg-[rgb(255,230,215)] transition-colors">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden py-24 px-4 md:px-6">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[rgb(225,240,255)]/50 to-transparent" />
+        <div className="mx-auto max-w-7xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <Badge variant="secondary" className="w-fit text-sm">{t.badge}</Badge>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgb(255,230,215)] text-[rgb(255,95,60)]">
+                <CheckCircle2 className="h-4 w-4" />
+                <span className="text-sm font-medium">New Design System</span>
+              </div>
+              
               <div className="space-y-4">
-                <h1>
-                  {t.heroTitleStart} <span className="bg-gradient-to-r from-[rgb(255,95,60)] to-[rgb(255,120,80)] bg-clip-text text-transparent">{t.heroTitleEmphasis}</span>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight text-text-primary">
+                  Find trusted
+                  <span className="block bg-gradient-to-r from-[rgb(11,45,100)] to-[rgb(255,95,60)] bg-clip-text text-transparent">
+                    sources smarter
+                  </span>
                 </h1>
-                <p className="max-w-2xl text-base md:text-lg text-slate-600">{t.heroSubtitle}</p>
+                <p className="text-lg text-text-secondary max-w-lg">
+                  Connect with verified suppliers and source products with confidence on our modern, intuitive marketplace.
+                </p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href={withLang("/dashboard/create-request", lang)}>
-                  <Button size="lg" className="w-full sm:w-auto">
-                    {t.ctaPrimary}
-                    <ArrowRight className={`h-4 w-4 ${isRtl ? "mr-2" : "ml-2"}`} />
-                  </Button>
-                </Link>
-                <Link href="#requests">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto">{t.ctaSecondary}</Button>
-                </Link>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="px-8 py-3 rounded-lg bg-[rgb(255,95,60)] text-white font-semibold hover:bg-[rgb(255,75,40)] transition-colors flex items-center justify-center gap-2">
+                  Get Started
+                  <ArrowRight className="h-5 w-5" />
+                </button>
+                <button className="px-8 py-3 rounded-lg border-2 border-[rgb(11,45,100)] text-[rgb(11,45,100)] font-semibold hover:bg-[rgb(225,240,255)] transition-colors">
+                  Learn More
+                </button>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {t.trustChips.map((chip) => (
-                  <div key={chip} className="surface-card flex items-center gap-2 px-3 py-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-success-500" />
-                    {chip}
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                {["Verified Network", "Fast Matching", "Global Scale"].map((chip) => (
+                  <div key={chip} className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="h-5 w-5 text-[rgb(35,165,105)]" />
+                    <span className="text-text-secondary">{chip}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Marketplace Pulse</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {highlights.map((item) => (
-                  <div key={item.label} className="flex items-center justify-between rounded-md border ui-border-color bg-slate-50 p-3">
-                    <span className="text-sm text-slate-600">{item.label}</span>
-                    <span className="font-semibold text-slate-900">{item.value}</span>
-                  </div>
-                ))}
-                <div className="rounded-md border ui-border-color bg-primary-50 p-3 text-sm text-primary-700">
-                  {t.trustStatLabels[0]}: <span className="font-semibold">{t.trustStats[0]}</span>
+            {/* Feature Card */}
+            <div className="rounded-2xl bg-surface border border-border-subtle shadow-lg p-8 space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-text-primary">Platform Metrics</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: "Active Requests", value: "1,200+" },
+                    { label: "Verified Users", value: "5,000+" },
+                    { label: "Average Response", value: "< 2 hours" }
+                  ].map((metric) => (
+                    <div key={metric.label} className="flex items-center justify-between p-3 rounded-lg bg-bg">
+                      <span className="text-sm text-text-secondary">{metric.label}</span>
+                      <span className="font-bold text-text-primary">{metric.value}</span>
+                    </div>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
-          <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-8 flex items-end justify-between gap-3">
-              <div>
-                <h2>{t.categoriesTitle}</h2>
-                <p className="mt-1 text-slate-500">{t.categoriesSubtitle}</p>
+              </div>
+              <div className="p-4 rounded-lg bg-gradient-to-r from-[rgb(225,240,255)] to-[rgb(255,230,215)]">
+                <p className="text-sm text-text-primary font-medium">
+                  New modern design with improved visual hierarchy and premium color palette.
+                </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {categories.map((category) => (
-                <Link key={category.id} href={withLang(`/category/${category.slug}`, lang)}>
-                  <CategoryCard
-                    name={getCategoryLabel(category.slug, lang, category.name)}
-                    slug={category.slug}
-                    icon={category.icon}
-                  />
-                </Link>
-              ))}
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
-          <div className="mx-auto grid max-w-7xl gap-4 px-4 md:px-6 md:grid-cols-3">
-            {t.featuresTitle.map((title, idx) => {
-              const Icon = featureIcons[idx];
+      {/* Features Section */}
+      <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-transparent to-[rgb(248,251,255)]">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-text-primary mb-4">Why Choose AutoSAV</h2>
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+              Experience a marketplace built with modern design principles and premium user experience
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Shield, title: "Verified Sellers", desc: "All suppliers are vetted for reliability and quality" },
+              { icon: Zap, title: "Fast Responses", desc: "Get offers within hours, not days" },
+              { icon: Globe, title: "Global Network", desc: "Connect with suppliers across multiple countries" }
+            ].map((feature, idx) => {
+              const Icon = feature.icon;
               return (
-                <Card key={title}>
-                  <CardContent className="space-y-3 p-6">
-                    <span className="inline-flex rounded-md bg-primary-50 p-2 text-primary-700">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-                    <p className="text-sm text-slate-500">{t.featuresDesc[idx]}</p>
-                  </CardContent>
-                </Card>
+                <div key={idx} className="rounded-xl bg-surface border border-border-subtle p-8 hover:shadow-lg transition-shadow">
+                  <div className="inline-flex p-3 rounded-lg bg-[rgb(255,230,215)] text-[rgb(255,95,60)] mb-4">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-text-primary mb-2">{feature.title}</h3>
+                  <p className="text-text-secondary">{feature.desc}</p>
+                </div>
               );
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="requests" className="border-b border-slate-200/80 py-12">
-          <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <HomeRequestFeed requests={requests} user={user} lang={lang} isRtl={isRtl} />
+      {/* How It Works */}
+      <section className="py-20 px-4 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-text-primary mb-4">How It Works</h2>
+            <p className="text-lg text-text-secondary">Simple, transparent, and fast. Source in three steps.</p>
           </div>
-        </section>
 
-        <section className="border-b border-slate-200/80 py-14 md:py-18">
-          <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-8 text-center">
-              <h2>{t.howItWorksTitle}</h2>
-              <p className="mt-2 text-slate-500">{t.howItWorksSubtitle}</p>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {[Package, MessagesSquare, Handshake].map((Icon, idx) => (
-                <Card key={t.steps[idx].title}>
-                  <CardContent className="space-y-3 p-6 text-center">
-                    <span className="mx-auto inline-flex rounded-full bg-primary-50 p-3 text-primary-700">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <h3 className="text-base font-semibold text-foreground">{t.steps[idx].title}</h3>
-                    <p className="text-sm text-slate-500">{t.steps[idx].description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="contact" className="py-14 md:py-18">
-          <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t.contactTitle}</CardTitle>
-                <p className="text-sm text-slate-500">{t.contactSubtitle}</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 md:grid-cols-3">
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactEmailLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">support@autosav.app</p>
-                  </div>
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactPhoneLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">+213 555 00 00 00</p>
-                  </div>
-                  <div className="rounded-md border ui-border-color bg-slate-50 p-4">
-                    <p className="text-xs uppercase text-slate-400">{t.contactHoursLabel}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">09:00 - 18:00</p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Package, title: "Post Your Request", desc: "Share product details, quantity, and budget" },
+              { icon: MessageSquare, title: "Receive Offers", desc: "Verified providers reply with pricing and terms" },
+              { icon: Handshake, title: "Complete Order", desc: "Compare, negotiate, and finalize with visibility" }
+            ].map((step, idx) => {
+              const Icon = step.icon;
+              return (
+                <div key={idx} className="relative">
+                  {idx < 2 && (
+                    <div className="hidden md:block absolute right-0 top-1/2 w-8 h-1 bg-gradient-to-r from-[rgb(11,45,100)] to-[rgb(255,95,60)] transform translate-x-1/2 -translate-y-1/2" />
+                  )}
+                  <div className="rounded-xl bg-surface border border-border-subtle p-8 text-center">
+                    <div className="inline-flex p-4 rounded-full bg-[rgb(225,240,255)] text-[rgb(11,45,100)] mb-4">
+                      <Icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-text-primary mb-2">{step.title}</h3>
+                    <p className="text-text-secondary">{step.desc}</p>
                   </div>
                 </div>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <Link href={withLang("/dashboard/create-request", lang)}>
-                    <Button>{t.ctaPrimary}</Button>
-                  </Link>
-                  <Link href={withLang("/register", lang)}>
-                    <Button variant="outline">{t.finalCtaAgent}</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+              );
+            })}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 md:px-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="rounded-2xl bg-gradient-to-br from-[rgb(11,45,100)] to-[rgb(20,60,140)] p-12 text-center text-white">
+            <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+            <p className="text-lg mb-8 opacity-90">Join businesses sourcing smarter today</p>
+            <button className="px-8 py-4 rounded-lg bg-[rgb(255,95,60)] text-white font-bold hover:bg-[rgb(255,75,40)] transition-colors">
+              Create Account
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border-subtle bg-surface py-12 px-4 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex h-6 w-6 items-center justify-center rounded bg-gradient-to-br from-[rgb(11,45,100)] to-[rgb(255,95,60)] text-white text-xs font-bold">
+                  A
+                </div>
+                <span className="font-bold text-text-primary">AutoSAV</span>
+              </div>
+              <p className="text-sm text-text-muted">Modern marketplace for global sourcing</p>
+            </div>
+            {["Product", "Company", "Support"].map((col) => (
+              <div key={col}>
+                <h4 className="font-semibold text-text-primary mb-4">{col}</h4>
+                <ul className="space-y-2 text-sm text-text-secondary">
+                  <li><a href="#" className="hover:text-[rgb(255,95,60)] transition-colors">Link One</a></li>
+                  <li><a href="#" className="hover:text-[rgb(255,95,60)] transition-colors">Link Two</a></li>
+                  <li><a href="#" className="hover:text-[rgb(255,95,60)] transition-colors">Link Three</a></li>
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-border-subtle pt-8 flex items-center justify-between text-sm text-text-muted">
+            <p>&copy; 2024 AutoSAV. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-text-primary transition-colors">Privacy</a>
+              <a href="#" className="hover:text-text-primary transition-colors">Terms</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
-
