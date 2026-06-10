@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,7 +40,7 @@ export function TransactionChatPanel({
   messages,
   offers,
 }: TransactionChatPanelProps) {
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
   const [body, setBody] = useState("");
   const [selectedOfferId, setSelectedOfferId] = useState(defaultOfferId || offers[0]?.id || "");
 
@@ -93,10 +93,16 @@ export function TransactionChatPanel({
         {canSend ? (
           <form
             action={async (formData) => {
+              if (pending) return;
+              setPending(true);
               formData.set("requestId", requestId);
               formData.set("offerId", selectedOfferId || "");
-              await sendTransactionChatMessage(formData);
-              setBody("");
+              try {
+                await sendTransactionChatMessage(formData);
+                setBody("");
+              } finally {
+                setPending(false);
+              }
             }}
             className="space-y-4"
           >

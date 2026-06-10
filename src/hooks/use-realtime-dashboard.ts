@@ -13,6 +13,11 @@ export function useRealtimeDashboard({ initialData, onRefresh }: UseRealtimeDash
   const [isLive, setIsLive] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
+  useEffect(() => {
+    setData(initialData);
+    setLastUpdated(new Date());
+  }, [initialData]);
+
   const refresh = useCallback(async () => {
     try {
       const fresh = await onRefresh();
@@ -33,7 +38,6 @@ export function useRealtimeDashboard({ initialData, onRefresh }: UseRealtimeDash
 
     return () => {
       clearInterval(interval);
-      setIsLive(false);
     };
   }, [refresh]);
 

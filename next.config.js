@@ -31,6 +31,11 @@ const nextConfig = {
       { source: '/intermediary/shipments', destination: '/dashboard/deliveries', permanent: true },
     ];
   },
+  async rewrites() {
+    return [
+      { source: '/favicon.ico', destination: '/favicon.svg' },
+    ];
+  },
 };
 
 module.exports = nextConfig;

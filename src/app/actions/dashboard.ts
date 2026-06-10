@@ -137,11 +137,6 @@ function buildAlerts(
 // MAIN ACTION — OPTIMISÉE sans N+1
 // ============================================================
 export async function getUserDashboardSummary(): Promise<DashboardSummary> {
-  const user = await requireRole([UserRole.USER]);
-
-  const cached = getCached(user.id);
-  if (cached) return cached;
-
   const fallback: DashboardSummary = {
     myRequestsCount: 0, offersReceivedCount: 0, submittedOffersCount: 0,
     activeDeliveriesCount: 0, disputesCount: 0, transactionsCount: 0,
@@ -151,6 +146,11 @@ export async function getUserDashboardSummary(): Promise<DashboardSummary> {
   };
 
   try {
+    const user = await requireRole([UserRole.USER]);
+
+    const cached = getCached(user.id);
+    if (cached) return cached;
+
     const [
       myRequestsCount, offersReceivedCount, submittedOffersCount,
       activeDeliveriesCount, disputesCount, transactionsCount, trust,

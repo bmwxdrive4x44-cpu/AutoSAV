@@ -11,24 +11,25 @@ import { Plane, AlertCircle, Info } from "lucide-react";
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { redirect?: string; action?: string; role?: string; lang?: string; error?: string };
+  searchParams?: { redirect?: string; action?: string; role?: string; lang?: string; error?: string };
 }) {
-  const showOfferMessage = searchParams.action === "offer";
-  const redirectUrl = searchParams.redirect || "";
-  const lang = normalizeLang(searchParams.lang);
+  const params = searchParams ?? {};
+  const showOfferMessage = params.action === "offer";
+  const redirectUrl = params.redirect || "";
+  const lang = normalizeLang(params.lang);
   const t = getLoginCopy(lang);
   const isRtl = textDir(lang) === "rtl";
-  const errorMessage = getAuthErrorMessage(lang, searchParams.error);
+  const errorMessage = getAuthErrorMessage(lang, params.error);
   const pendingLabel = lang === "fr" ? "Connexion..." : lang === "ar" ? "جار تسجيل الدخول..." : "Signing in...";
 
   const registerHref = withLang(
-    `/register${redirectUrl ? `?redirect=${redirectUrl}&action=${searchParams.action}&role=${searchParams.role}` : ""}`,
+    `/register${redirectUrl ? `?redirect=${redirectUrl}&action=${params.action}&role=${params.role}` : ""}`,
     lang
   );
 
   return (
     <div className="min-h-screen bg-bg">
-      <Header lang={lang} />
+      <Header lang={lang} disableUserLookup />
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md" dir={isRtl ? "rtl" : "ltr"}>
           {/* Logo */}
@@ -63,8 +64,8 @@ export default function LoginPage({
             <form action={login} className="space-y-5">
               {redirectUrl && <input type="hidden" name="redirect" value={redirectUrl} />}
               <input type="hidden" name="lang" value={lang} />
-              {searchParams.action && <input type="hidden" name="action" value={searchParams.action} />}
-              {searchParams.role && <input type="hidden" name="role" value={searchParams.role} />}
+              {params.action && <input type="hidden" name="action" value={params.action} />}
+              {params.role && <input type="hidden" name="role" value={params.role} />}
               
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-foreground font-medium">{t.email}</Label>

@@ -80,6 +80,13 @@ export function AdminDashboardClient({
     "overview"
   );
 
+  const tabClass = (tab: typeof activeTab) =>
+    `px-4 py-2.5 rounded-xl border text-sm font-semibold transition ${
+      activeTab === tab
+        ? "bg-accent text-white border-accent shadow-sm"
+        : "bg-surface text-slate-700 border-border hover:border-accent/40 hover:text-accent"
+    }`;
+
   async function reloadAdminData() {
     const [statsData, usersData, disputesData, transactionsData, requestsData, offersData, agentsPerfData] = await Promise.all([
       getAdminDashboardStats(),
@@ -225,89 +232,71 @@ export function AdminDashboardClient({
   const maxOffers = Math.max(1, ...(stats?.offersPerDay || []).map((item: any) => item.count));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-bg p-4 sm:p-6">
+      <div className="mx-auto max-w-7xl rounded-3xl border border-border bg-[radial-gradient(circle_at_top_right,rgba(45,90,60,0.14),transparent_38%),radial-gradient(circle_at_top_left,rgba(235,120,90,0.14),transparent_44%)] p-5 sm:p-7">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Tableau de Bord Admin</h1>
-          <p className="text-gray-600">Gestion globale de la plateforme.</p>
+          <h1 className="mb-2 text-3xl font-bold text-foreground sm:text-4xl">Tableau de Bord Admin</h1>
+          <p className="text-muted">Gestion globale de la plateforme.</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">Erreur : {error}</div>
+          <div className="mb-6 rounded-xl border border-danger/30 bg-danger-soft p-4 text-sm font-semibold text-danger">Erreur : {error}</div>
         )}
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6 flex-wrap">
+        <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "overview" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("overview")}
           >
             Vue d'ensemble
           </button>
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "users" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("users")}
           >
             Utilisateurs
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "requests" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("requests")}
           >
             Demandes
           </button>
           <button
             onClick={() => setActiveTab("offers")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "offers" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("offers")}
           >
             Offres
           </button>
           <button
             onClick={() => setActiveTab("disputes")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "disputes" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("disputes")}
           >
             Litiges
           </button>
           <button
             onClick={() => setActiveTab("transactions")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "transactions" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("transactions")}
           >
             Transactions
           </button>
           <button
             onClick={() => setActiveTab("agents")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "agents" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("agents")}
           >
             Validation utilisateurs
           </button>
           <button
             onClick={() => setActiveTab("analytics")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "analytics" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("analytics")}
           >
             Analytique
           </button>
           <button
             onClick={() => setActiveTab("notifications")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
-              activeTab === "notifications" ? "bg-purple-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+            className={tabClass("notifications")}
           >
             Notifications
           </button>
@@ -315,7 +304,7 @@ export function AdminDashboardClient({
 
         {activeTab === "overview" && stats && (
           <>
-            <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4 flex items-center justify-between gap-4">
+            <div className="surface-card mb-4 flex items-center justify-between gap-4 p-4">
               <div>
                 <p className="text-sm font-semibold text-slate-700">Notifications de test</p>
                 <p className="text-xs text-slate-500">Envoie un email de test à l'admin connecté.</p>
@@ -323,53 +312,53 @@ export function AdminDashboardClient({
               <button
                 onClick={handleSendTestNotification}
                 disabled={notifPending}
-                className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
               >
                 {notifPending ? "Envoi..." : "Envoyer un test"}
               </button>
             </div>
 
             {notifMessage && (
-              <div className="mb-4 p-3 rounded-lg bg-slate-100 text-sm text-slate-700">{notifMessage}</div>
+              <div className="mb-4 rounded-lg border border-sky/30 bg-sky-soft p-3 text-sm text-slate-700">{notifMessage}</div>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Utilisateurs totaux</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.totalUsers}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Utilisateurs totaux</p>
+                <p className="text-3xl font-bold text-foreground">{stats.totalUsers}</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Utilisateurs actifs</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.activeUsers}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Utilisateurs actifs</p>
+                <p className="text-3xl font-bold text-foreground">{stats.activeUsers}</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Offreurs actifs</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.activeProviders}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Offreurs actifs</p>
+                <p className="text-3xl font-bold text-foreground">{stats.activeProviders}</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Demandes ouvertes</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.openRequests}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Demandes ouvertes</p>
+                <p className="text-3xl font-bold text-foreground">{stats.openRequests}</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Transactions en cours</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.dealsInProgress}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Transactions en cours</p>
+                <p className="text-3xl font-bold text-foreground">{stats.dealsInProgress}</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-gray-500 text-sm mb-2">Transactions en attente</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.pendingTransactions}</p>
+              <div className="surface-card p-6">
+                <p className="mb-2 text-sm text-muted">Transactions en attente</p>
+                <p className="text-3xl font-bold text-foreground">{stats.pendingTransactions}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-sm font-semibold text-gray-700 mb-4">Demandes / jour (7 jours)</p>
+              <div className="surface-card p-6">
+                <p className="mb-4 text-sm font-semibold text-slate-700">Demandes / jour (7 jours)</p>
                 <div className="space-y-2">
                   {(stats.requestsPerDay || []).map((item: any) => (
                     <div key={item.day} className="flex items-center gap-3">
                       <span className="w-10 text-xs text-gray-500 uppercase">{item.day}</span>
                       <div className="h-2.5 flex-1 rounded-full bg-slate-100 overflow-hidden">
                         <div
-                          className="h-full bg-blue-500"
+                          className="h-full bg-accent"
                           style={{ width: `${Math.max(6, (item.count / maxRequests) * 100)}%` }}
                         />
                       </div>
@@ -379,15 +368,15 @@ export function AdminDashboardClient({
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow">
-                <p className="text-sm font-semibold text-gray-700 mb-4">Offres / jour (7 jours)</p>
+              <div className="surface-card p-6">
+                <p className="mb-4 text-sm font-semibold text-slate-700">Offres / jour (7 jours)</p>
                 <div className="space-y-2">
                   {(stats.offersPerDay || []).map((item: any) => (
                     <div key={item.day} className="flex items-center gap-3">
                       <span className="w-10 text-xs text-gray-500 uppercase">{item.day}</span>
                       <div className="h-2.5 flex-1 rounded-full bg-slate-100 overflow-hidden">
                         <div
-                          className="h-full bg-emerald-500"
+                          className="h-full bg-highlight"
                           style={{ width: `${Math.max(6, (item.count / maxOffers) * 100)}%` }}
                         />
                       </div>
@@ -401,9 +390,9 @@ export function AdminDashboardClient({
         )}
 
         {activeTab === "users" && (
-          <div className="bg-white rounded-lg shadow overflow-x-auto">
+          <div className="surface-card overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-100">
+              <thead className="bg-slate-100/80">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nom</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
@@ -415,11 +404,11 @@ export function AdminDashboardClient({
               </thead>
               <tbody className="divide-y">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-3 text-sm text-gray-800">{user.name}</td>
-                    <td className="px-6 py-3 text-sm text-gray-600">{user.email}</td>
+                  <tr key={user.id} className="hover:bg-slate-50/70">
+                    <td className="px-6 py-3 text-sm text-slate-800">{user.name}</td>
+                    <td className="px-6 py-3 text-sm text-slate-600">{user.email}</td>
                     <td className="px-6 py-3 text-sm">
-                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                      <span className="rounded-full bg-sky-soft px-3 py-1 text-xs font-semibold text-sky">
                         {user.role}
                       </span>
                     </td>
@@ -450,7 +439,7 @@ export function AdminDashboardClient({
                         <button
                           onClick={() => handleToggleUserBlock(user.id, user.isBlocked)}
                           disabled={!!userActionPending[user.id] || user.role === "ADMIN"}
-                          className={`px-3 py-1 rounded-md text-xs font-semibold ${user.isBlocked ? "bg-emerald-600 text-white" : "bg-amber-600 text-white"} disabled:opacity-60`}
+                          className={`rounded-md px-3 py-1 text-xs font-semibold ${user.isBlocked ? "bg-success text-white" : "bg-warning text-white"} disabled:opacity-60`}
                         >
                           {user.isBlocked ? "Débloquer" : "Bloquer"}
                         </button>
@@ -458,7 +447,7 @@ export function AdminDashboardClient({
                           value={user.role}
                           onChange={(e) => handleChangeRole(user.id, e.target.value)}
                           disabled={!!userActionPending[user.id]}
-                          className="h-8 rounded-md border border-slate-300 px-2 text-xs"
+                          className="h-8 rounded-md border border-border bg-surface px-2 text-xs"
                         >
                           <option value="USER">USER</option>
                           <option value="ADMIN">ADMIN</option>
@@ -466,7 +455,7 @@ export function AdminDashboardClient({
                         <button
                           onClick={() => handleViewHistory(user.id)}
                           disabled={!!userActionPending[user.id]}
-                          className="px-3 py-1 rounded-md border border-slate-300 text-xs font-semibold hover:bg-slate-50 disabled:opacity-60"
+                          className="rounded-md border border-border px-3 py-1 text-xs font-semibold hover:bg-slate-50 disabled:opacity-60"
                         >
                           Historique
                         </button>
@@ -475,21 +464,21 @@ export function AdminDashboardClient({
                             <button
                               onClick={() => handleAgentValidation(user.id, "VALIDATED")}
                               disabled={!!userActionPending[user.id]}
-                              className="px-3 py-1 rounded-md bg-emerald-600 text-white text-xs font-semibold disabled:opacity-60"
+                              className="rounded-md bg-success px-3 py-1 text-xs font-semibold text-white disabled:opacity-60"
                             >
                               Valider
                             </button>
                             <button
                               onClick={() => handleAgentValidation(user.id, "REJECTED")}
                               disabled={!!userActionPending[user.id]}
-                              className="px-3 py-1 rounded-md bg-rose-600 text-white text-xs font-semibold disabled:opacity-60"
+                              className="rounded-md bg-danger px-3 py-1 text-xs font-semibold text-white disabled:opacity-60"
                             >
                               Rejeter
                             </button>
                             <button
                               onClick={() => handleAgentValidation(user.id, "PENDING")}
                               disabled={!!userActionPending[user.id]}
-                              className="px-3 py-1 rounded-md border border-slate-300 text-xs font-semibold hover:bg-slate-50 disabled:opacity-60"
+                              className="rounded-md border border-border px-3 py-1 text-xs font-semibold hover:bg-slate-50 disabled:opacity-60"
                             >
                               En attente
                             </button>
@@ -528,12 +517,12 @@ export function AdminDashboardClient({
         {activeTab === "analytics" && <AnalyticsSimple stats={stats} />}
 
         {activeTab === "notifications" && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-4 border-b border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="surface-card overflow-hidden">
+            <div className="grid grid-cols-1 gap-3 border-b border-border p-4 md:grid-cols-4">
               <select
                 value={notifStatusFilter}
                 onChange={(e) => setNotifStatusFilter(e.target.value as "ALL" | "SENT" | "FAILED" | "MOCK")}
-                className="h-10 rounded-lg border border-slate-300 px-3 text-sm"
+                className="h-10 rounded-lg border border-border bg-surface px-3 text-sm"
               >
                 <option value="ALL">Tous les statuts</option>
                 <option value="SENT">Envoyées</option>
@@ -543,7 +532,7 @@ export function AdminDashboardClient({
               <select
                 value={notifEventFilter}
                 onChange={(e) => setNotifEventFilter(e.target.value)}
-                className="h-10 rounded-lg border border-slate-300 px-3 text-sm"
+                className="h-10 rounded-lg border border-border bg-surface px-3 text-sm"
               >
                 <option value="ALL">Tous les événements</option>
                 {notificationEvents.map((event) => (
@@ -554,22 +543,22 @@ export function AdminDashboardClient({
                 value={notifQuery}
                 onChange={(e) => setNotifQuery(e.target.value)}
                 placeholder="Rechercher..."
-                className="h-10 rounded-lg border border-slate-300 px-3 text-sm md:col-span-2"
+                className="h-10 rounded-lg border border-border bg-surface px-3 text-sm md:col-span-2"
               />
             </div>
 
-            <div className="px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 text-xs text-slate-600">
               <div>Logs: {notificationTotal} • Page {notificationPage} / {notificationTotalPages}</div>
-              <button onClick={exportNotificationsCsv} disabled={filteredNotificationLogs.length === 0} className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50">
+              <button onClick={exportNotificationsCsv} disabled={filteredNotificationLogs.length === 0} className="rounded-lg border border-border px-3 py-1.5 hover:bg-slate-50 disabled:opacity-60">
                 Exporter CSV
               </button>
             </div>
 
             {filteredNotificationLogs.length === 0 ? (
-              <div className="p-6 text-sm text-gray-500">Aucune notification.</div>
+              <div className="p-6 text-sm text-slate-500">Aucune notification.</div>
             ) : (
               <table className="w-full text-xs">
-                <thead className="bg-gray-100">
+                <thead className="bg-slate-100/80">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">Événement</th>
@@ -579,12 +568,12 @@ export function AdminDashboardClient({
                 </thead>
                 <tbody className="divide-y">
                   {filteredNotificationLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-gray-600">{formatDateTimeStable(log.createdAt)}</td>
-                      <td className="px-4 py-2 text-gray-800">{log.event}</td>
-                      <td className="px-4 py-2 text-gray-600">{log.toEmail}</td>
+                    <tr key={log.id} className="hover:bg-slate-50/70">
+                      <td className="px-4 py-2 text-slate-600">{formatDateTimeStable(log.createdAt)}</td>
+                      <td className="px-4 py-2 text-slate-800">{log.event}</td>
+                      <td className="px-4 py-2 text-slate-600">{log.toEmail}</td>
                       <td className="px-4 py-2">
-                        <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-700">{log.status}</span>
+                        <span className="rounded-full bg-slate-100 px-2 py-1 text-slate-700">{log.status}</span>
                       </td>
                     </tr>
                   ))}
@@ -592,18 +581,18 @@ export function AdminDashboardClient({
               </table>
             )}
 
-            <div className="px-4 py-3 border-t border-slate-200 flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2 border-t border-border px-4 py-3">
               <button
                 onClick={() => loadNotificationLogs(notificationPage - 1)}
                 disabled={notificationPage <= 1}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 disabled:opacity-60 text-sm"
+                className="rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-slate-50 disabled:opacity-60"
               >
                 Précédent
               </button>
               <button
                 onClick={() => loadNotificationLogs(notificationPage + 1)}
                 disabled={notificationPage >= notificationTotalPages}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 disabled:opacity-60 text-sm"
+                className="rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-slate-50 disabled:opacity-60"
               >
                 Suivant
               </button>
@@ -612,14 +601,14 @@ export function AdminDashboardClient({
         )}
 
         {historyOpen && historyUser && (
-          <div className="fixed inset-0 z-50 bg-black/40 p-4 flex items-center justify-center">
-            <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl border border-slate-200">
-              <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="w-full max-w-3xl rounded-xl border border-border bg-surface shadow-xl">
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
                 <div>
                   <h3 className="text-base font-semibold text-slate-900">Historique utilisateur</h3>
                   <p className="text-xs text-slate-500">{historyUser.user.name} • {historyUser.user.email}</p>
                 </div>
-                <button onClick={() => setHistoryOpen(false)} className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold hover:bg-slate-50">
+                <button onClick={() => setHistoryOpen(false)} className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-slate-50">
                   Fermer
                 </button>
               </div>

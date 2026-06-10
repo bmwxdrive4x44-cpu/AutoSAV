@@ -14,15 +14,27 @@ function isDatabaseUnavailableError(error: unknown): boolean {
   }
 
   const maybeError = error as { code?: string; message?: string };
-  if (maybeError.code === "P1001" || maybeError.code === "P1002" || maybeError.code === "P1017") {
+  if (
+    maybeError.code === "P1000" ||
+    maybeError.code === "P1001" ||
+    maybeError.code === "P1002" ||
+    maybeError.code === "P1017" ||
+    maybeError.code === "42P05" ||
+    maybeError.code === "08P01"
+  ) {
     return true;
   }
 
   const message = maybeError.message || "";
   return (
+    message.includes("Authentication failed against database server") ||
+    message.includes("password authentication failed") ||
+    message.includes("provided database credentials") ||
     message.includes("Can't reach database server") ||
     message.includes("ECONNREFUSED") ||
     message.includes("Connection terminated") ||
+    message.includes("prepared statement") ||
+    message.includes("bind message supplies") ||
     message.includes("ENOIDENTIFIER") ||
     message.includes("no tenant identifier provided")
   );
